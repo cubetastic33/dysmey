@@ -63,7 +63,6 @@ impl<'a, 'r> FromRequest<'a, 'r> for IpAddr {
 
 #[get("/")]
 fn get_index(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
-    email_available(&mut client.lock().unwrap(), "");
     Template::render("index", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
