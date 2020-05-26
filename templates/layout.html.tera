@@ -13,7 +13,7 @@
         <a href="/">Dysmey</a>
         {% if email %}
         <a href="/profile" id="profileButton">
-            <img src="{{ photo }}" alt="profile picture">
+            <img src="{{ photo }}&s=30" alt="profile picture">
         </a>
         {% else %}
         <a href="/signin" id="profileButton">

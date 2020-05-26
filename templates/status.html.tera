@@ -1,7 +1,0 @@
-{% extends 'layout' %}
-
-{% block title %}Status | Dysmey{% endblock %}
-
-{% block body %}
-Hello, world!
-{% endblock %}

@@ -114,7 +114,7 @@ impl Context {
                     // If the credentials are correct
                     return Context {
                         email: Some(email.value().to_owned()),
-                        photo: Some(format!("https://www.gravatar.com/avatar/{:x}?s=30&d=retro", md5::compute(email.value()))),
+                        photo: Some(format!("https://www.gravatar.com/avatar/{:x}?d=retro", md5::compute(email.value().to_lowercase()))),
                     };
                 }
             }

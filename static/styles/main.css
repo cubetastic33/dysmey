@@ -68,6 +68,28 @@
 }
 
 /*
+    Media Queries
+*/
+
+@media only screen and (max-width: 1024px) {
+    #signinForm, #signupForm {
+        width: 65vw !important;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    #signinForm, #signupForm {
+        width: 75vw !important;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    #signinForm, #signupForm {
+        width: 90vw !important;
+    }
+}
+
+/*
     Other stuff
 */
 
@@ -100,7 +122,6 @@ header a:not(#profileButton) {
     border-radius: 100%;
     position: absolute;
     right: 1.25rem;
-    top: 1.25rem;
 }
 
 #profileButton i, #profileButton img {
@@ -108,8 +129,8 @@ header a:not(#profileButton) {
     padding: 0.25rem 0.25rem 0 0.25rem;
 }
 
-#profile:hover {
-    background-color: #FFFFFF24;
+#profileButton:hover {
+    background-color: #FFFFFF44;
 }
 
 h1, h2, h3 {

@@ -10,7 +10,7 @@ use postgres::{Client, NoTls};
 use rocket::{
     http::Cookies,
     request::{self, Form, FromRequest, Request},
-    response::{self, NamedFile, Responder},
+    response::{self, NamedFile, Responder, Redirect},
     Config, Outcome, Response, State,
 };
 use rocket_contrib::{serve::StaticFiles, templates::Template};
@@ -78,14 +78,13 @@ fn get_signup(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
 }
 
 #[get("/profile")]
-fn get_profile(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
-    Template::render("profile", Context::new(&mut client.lock().unwrap(), cookies))
-}
-
-#[get("/status/<tracking_id>")]
-fn get_status(client: State<Mutex<Client>>, cookies: Cookies, tracking_id: String) -> Template {
-    println!("Tracking ID: {}", tracking_id);
-    Template::render("status", Context::new(&mut client.lock().unwrap(), cookies))
+fn get_profile(client: State<Mutex<Client>>, cookies: Cookies) -> Result<Template, Redirect> {
+    let context = Context::new(&mut client.lock().unwrap(), cookies);
+    if context.email != None {
+        Ok(Template::render("profile", context))
+    } else {
+        Err(Redirect::to("/signin"))
+    }
 }
 
 #[get("/track/<tracking_id>")]
@@ -158,7 +157,6 @@ fn rocket() -> rocket::Rocket {
                 get_signin,
                 get_signup,
                 get_profile,
-                get_status,
                 get_track,
                 post_signin,
                 post_signup,

@@ -2,10 +2,24 @@
 
 {% block title %}Profile | Email Read Receipts{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" href="/styles/profile.css">
+{% endblock %}
+
 {% block body %}
-<h1>Profile</h1>
-<b>Email Address:</b> {{ email }}
-<button id="signoutButton">Sign Out</button>
+<div id="profileHeader">
+    <img src="{{ photo | safe }}&s=512" id="profilePicture" alt="profile picture">
+    <div class="infoColumn">
+        <div><b>Email:</b> {{ email }}</div>
+        <button id="signoutButton">Sign Out</button>
+    </div>
+</div>
+<div id="profileBody">
+    <h2>Tracked Emails</h2>
+    <p>
+        No tracked emails yet
+    </p>
+</div>
 {% endblock %}
 
 {% block javascript %}
