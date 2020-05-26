@@ -1,14 +1,17 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate serde_derive;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate serde_derive;
 
-use postgres::{Client, NoTls};
 use chrono::prelude::*;
+use postgres::{Client, NoTls};
 use rocket::{
-    request::{self, FromRequest, Request},
+    http::Cookies,
+    request::{self, Form, FromRequest, Request},
     response::{self, NamedFile, Responder},
-    Config, State, Outcome, Response,
+    Config, Outcome, Response, State,
 };
 use rocket_contrib::{serve::StaticFiles, templates::Template};
 use std::{env, sync::Mutex};
@@ -20,7 +23,7 @@ use db_operations::*;
 #[derive(Serialize)]
 struct Context {}
 
-#[derive(Serialize)]
+#[derive(FromForm)]
 pub struct UserDetails {
     email: String,
     password: String,
@@ -104,6 +107,15 @@ fn get_track(ip_address: IpAddr, tracking_id: String) -> EmptyImage {
         );
     }
     EmptyImage {}
+}
+
+#[post("/signin", data = "<user_details>")]
+fn post_signin(
+    client: State<Mutex<Client>>,
+    user_details: Form<UserDetails>,
+    cookies: Cookies,
+) -> String {
+    signin_user(&mut client.lock().unwrap(), user_details, cookies)
 }
 
 fn configure() -> Config {

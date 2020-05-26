@@ -1,8 +1,8 @@
 use super::UserDetails;
-use rand::prelude::*;
-use rand_hc::Hc128Rng;
 use argon2::{self, Config};
 use postgres::Client;
+use rand::prelude::*;
+use rand_hc::Hc128Rng;
 use rocket::{
     http::{Cookie, Cookies},
     request::Form,
@@ -33,48 +33,24 @@ CREATE TABLE IF NOT EXISTS tracked_visits (
 
 // Function to check if the email is available
 pub fn email_available(client: &mut Client, email: &str) -> bool {
-    client.execute(
-        "CREATE TABLE IF NOT EXISTS users (
+    client.execute("DROP TABLE users", &[]).unwrap();
+    client
+        .execute(
+            "CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             email VARCHAR (100) UNIQUE NOT NULL,
-            password CHAR (62) NOT NULL
+            password_hash CHAR (62) NOT NULL
         )",
-        &[]
-    ).unwrap();
-    client.execute(
-        "CREATE TABLE IF NOT EXISTS trackers (
-            id VARCHAR (8) PRIMARY KEY,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-            description VARCHAR (600)
-        )",
-        &[]
-    ).unwrap();
-    client.execute(
-        "CREATE TABLE IF NOT EXISTS tracked_visits (
-            visit_id SERIAL PRIMARY KEY,
-            tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
-            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ip_address VARCHAR NOT NULL,
-            user_agent VARCHAR NOT NULL
-        )",
-        &[]
-    ).unwrap();
-    let rng = thread_rng();
-    let salt = Hc128Rng::from_rng(rng).unwrap().next_u64();
-    let config = Config::default();
-    let password_hash = argon2::hash_encoded(
-        String::from("random password").as_bytes(),
-        &salt.to_ne_bytes(),
-        &config
-    ).unwrap();
-    println!("hash: {}", password_hash);
+            &[],
+        )
+        .unwrap();
     if email.len() == 0 {
         // The email has length 0
         return false;
     }
     // Return whether there are no rows with the given email
-    client.query("SELECT * FROM users WHERE email = $1", &[&email])
+    client
+        .query("SELECT * FROM users WHERE email = $1", &[&email])
         .unwrap()
         .is_empty()
 }
@@ -83,7 +59,7 @@ pub fn email_available(client: &mut Client, email: &str) -> bool {
 pub fn create_user(
     client: &mut Client,
     user_details: Form<UserDetails>,
-    mut cookies: Cookies
+    mut cookies: Cookies,
 ) -> String {
     if user_details.email.len() == 0 {
         return String::from("Error: email not provided");
@@ -97,15 +73,50 @@ pub fn create_user(
     let password_hash = argon2::hash_encoded(
         &user_details.password.as_bytes(),
         &salt.to_ne_bytes(),
-        &config
-    ).unwrap();
-    if let Err(e) = client.query("INSERT INTO users VALUES (
+        &config,
+    )
+    .unwrap();
+    if let Err(e) = client.query(
+        "INSERT INTO users VALUES (
         DEFAULT, $1, $2
-    )", &[&user_details.email, &password_hash]) {
+    )",
+        &[&user_details.email, &password_hash],
+    ) {
         println!("Error: {}", e.to_string());
         return e.to_string();
     }
     cookies.add_private(Cookie::new("email", user_details.email.clone()));
     cookies.add_private(Cookie::new("hash", password_hash));
     return String::from("Success");
+}
+
+// Function to sign in the user if the given credentials are correct
+pub fn signin_user(
+    client: &mut Client,
+    user_details: Form<UserDetails>,
+    mut cookies: Cookies,
+) -> String {
+    if user_details.email.len() > 0 && user_details.password.len() >= 8 {
+        // Proceed if email and password have been provided
+        let rows = client
+            .query(
+                "SELECT password_hash FROM users WHERE email = $1",
+                &[&user_details.email],
+            )
+            .unwrap();
+        if !rows.is_empty() {
+            // Compare passwords if email exists
+            let password_hash: String = rows.get(0).unwrap().get(0);
+            if argon2::verify_encoded(
+                &password_hash,
+                user_details.password.as_bytes()
+            ).unwrap() {
+                // If the credentials are correct, create the cookies to sign the user in
+                cookies.add_private(Cookie::new("email", user_details.email.clone()));
+                cookies.add_private(Cookie::new("hash", password_hash));
+                return String::from("Success");
+            }
+        }
+    }
+    return String::from("Invalid credentials");
 }
