@@ -40,20 +40,6 @@
             }, duration);
         });
     }
-
-    $("#signoutButton").click(function() {
-        showToast("Please wait...");
-        $.ajax({
-            type: "POST",
-            url: "/signout",
-            success: function(result) {
-                console.log(result);
-                if (result == "Success") {
-                    window.location.href = "/";
-                }
-            }
-        });
-    });
 </script>
 {% block javascript %}
 {% endblock %}

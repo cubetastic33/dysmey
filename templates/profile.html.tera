@@ -7,3 +7,21 @@
 <b>Email Address:</b> {{ email }}
 <button id="signoutButton">Sign Out</button>
 {% endblock %}
+
+{% block javascript %}
+<script>
+    $("#signoutButton").click(function() {
+        showToast("Please wait...");
+        $.ajax({
+            type: "POST",
+            url: "/signout",
+            success: function(result) {
+                console.log(result);
+                if (result == "Success") {
+                    window.location.href = "/";
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
