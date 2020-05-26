@@ -20,6 +20,12 @@ use db_operations::*;
 #[derive(Serialize)]
 struct Context {}
 
+#[derive(Serialize)]
+pub struct UserDetails {
+    email: String,
+    password: String,
+}
+
 struct EmptyImage {}
 
 #[derive(Debug)]
