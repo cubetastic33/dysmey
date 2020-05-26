@@ -50,19 +50,19 @@ $("#signinForm").submit(function(e) {
 $("#signupForm").submit(function(e) {
     e.preventDefault();
     $('#signupButton').prop('disabled', true);
-    showToast('Please wait...', 5000);
     if ($("#password").val().length < 8) {
         $("#confirmPassword").parent().attr("class", "formInput");
         $("#password").parent().attr("class", "formInput error");
         $('#signupButton').prop('disabled', false);
         return;
     }
-    if ($("password").val() !== $("#confirmPassword").val()) {
+    if ($("#password").val() !== $("#confirmPassword").val()) {
         $("#password").parent().attr("class", "formInput");
         $("#confirmPassword").parent().attr("class", "formInput error");
         $('#signupButton').prop('disabled', false);
         return;
     }
+    showToast('Please wait...', 5000);
     $("#password").parent().attr("class", "formInput");
     $("#confirmPassword").parent().attr("class", "formInput");
     $.ajax({
