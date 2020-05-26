@@ -33,8 +33,6 @@ CREATE TABLE IF NOT EXISTS tracked_visits (
 
 // Function to check if the email is available
 pub fn email_available(client: &mut Client, email: &str) -> bool {
-    client.execute("DROP TABLE users", &[]).unwrap();
-    client.execute("DROP TABLE tracked_visits", &[]).unwrap();
     client.execute(
         "CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -63,7 +61,7 @@ pub fn email_available(client: &mut Client, email: &str) -> bool {
         &[]
     ).unwrap();
     let rng = thread_rng();
-    let salt = Hc128Rng::from_rng(rng).unwrap().next_u32();
+    let salt = Hc128Rng::from_rng(rng).unwrap().next_u64();
     let config = Config::default();
     let password_hash = argon2::hash_encoded(
         String::from("random password").as_bytes(),
@@ -94,7 +92,7 @@ pub fn create_user(
     }
     // Generate salt using a CSPRNG
     let rng = thread_rng();
-    let salt = Hc128Rng::from_rng(rng).unwrap().next_u32();
+    let salt = Hc128Rng::from_rng(rng).unwrap().next_u64();
     let config = Config::default();
     let password_hash = argon2::hash_encoded(
         &user_details.password.as_bytes(),
