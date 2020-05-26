@@ -31,19 +31,6 @@ CREATE TABLE IF NOT EXISTS tracked_visits (
 )
 */
 
-// Function to check if the email is available
-pub fn email_available(client: &mut Client, email: &str) -> bool {
-    if email.len() == 0 {
-        // The email has length 0
-        return false;
-    }
-    // Return whether there are no rows with the given email
-    client
-        .query("SELECT * FROM users WHERE email = $1", &[&email])
-        .unwrap()
-        .is_empty()
-}
-
 // Function to create a user with the given details if they're valid
 pub fn signup_user(
     client: &mut Client,

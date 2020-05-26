@@ -3,7 +3,7 @@
 {% block title %}Sign up | Dysmey{% endblock %}
 
 {% block body %}
-<form id="form signup">
+<form id="signupForm">
     <h1>Sign Up</h1>
     <div class="formInput">
         <i class="material-icons">mail</i>

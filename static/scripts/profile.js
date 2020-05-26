@@ -24,7 +24,7 @@ $('.formInput input, .formInput select').each(function() {
     });
 });
 
-$("#signin").submit(function(e) {
+$("#signinForm").submit(function(e) {
     e.preventDefault();
     $('#signinButton').prop('disabled', true);
     showToast('Please wait...', 5000);
@@ -47,7 +47,7 @@ $("#signin").submit(function(e) {
     });
 });
 
-$("#signup").submit(function(e) {
+$("#signupForm").submit(function(e) {
     e.preventDefault();
     $('#signupButton').prop('disabled', true);
     showToast('Please wait...', 5000);
