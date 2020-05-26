@@ -14,7 +14,7 @@ pub fn email_available(client: &mut Client, email: &str) -> bool {
             id PRIMARY KEY,
             time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ip_address VARCHAR NOT NULL,
-            user_agent VARCHAR NOT NULL,
+            user_agent VARCHAR NOT NULL
         )",
         &[]
     ).unwrap();
