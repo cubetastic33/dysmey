@@ -33,7 +33,7 @@ $("#signinForm").submit(function(e) {
         url: "/signin",
         data: {
             email: $("#email").val(),
-            password: $("password").val(),
+            password: $("#password").val(),
         },
         success: function(result) {
             console.log(result);
@@ -70,7 +70,7 @@ $("#signupForm").submit(function(e) {
         url: "/signup",
         data: {
             email: $("#email").val(),
-            password: $("password").val(),
+            password: $("#password").val(),
         },
         success: function(result) {
             console.log(result);
