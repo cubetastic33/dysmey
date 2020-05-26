@@ -4,4 +4,6 @@
 
 {% block body %}
 <h1>Profile</h1>
+<b>Email Address:</b> {{ email }}
+<button id="signoutButton">Sign Out</button>
 {% endblock %}
