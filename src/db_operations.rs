@@ -11,7 +11,7 @@ use rocket::{
 pub fn email_available(client: &mut Client, email: &str) -> bool {
     client.execute(
         "CREATE TABLE IF NOT EXISTS tracked_visits (
-            id PRIMARY KEY,
+            id VARCHAR (8) PRIMARY KEY,
             time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ip_address VARCHAR NOT NULL,
             user_agent VARCHAR NOT NULL
