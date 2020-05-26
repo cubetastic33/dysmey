@@ -88,11 +88,6 @@ header, footer {
     padding: 1rem;
 }
 
-header {
-    display: flex;
-    justify-content: space-between;
-}
-
 header a:not(#profileButton) {
     color: var(--bg-primary);
     font-size: 2em;
@@ -102,6 +97,19 @@ header a:not(#profileButton) {
 #profileButton {
     color: var(--bg-primary);
     text-decoration: none;
+    border-radius: 100%;
+    position: absolute;
+    right: 1.25rem;
+    top: 1.25rem;
+}
+
+#profileButton i, #profileButton img {
+    border-radius: 100%;
+    padding: 0.25rem 0.25rem 0 0.25rem;
+}
+
+#profile:hover {
+    background-color: #FFFFFF24;
 }
 
 h1, h2, h3 {
