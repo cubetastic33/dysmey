@@ -1,0 +1,7 @@
+{% extends 'layout' %}
+
+{% block title %}Profile | Email Read Receipts{% endblock %}
+
+{% block body %}
+<h1>Profile</h1>
+{% endblock %}

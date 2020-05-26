@@ -1,0 +1,287 @@
+/*
+    Variables
+*/
+
+:root {
+    --bg-primary: #212121;
+    --bg-secondary: #121212;
+    --fg-primary: #b939ef;
+    --fg-secondary: #d17ff4;
+    --error: #EF5350;
+}
+
+/*
+    Fonts
+*/
+
+@font-face {
+    font-family: "Lora Medium";
+    src: url(/fonts/Lora/Lora-Medium.ttf);
+}
+
+@font-face {
+    font-family: "Fira Sans";
+    src: url(/fonts/Fira_Sans/FiraSans-Regular.ttf);
+}
+
+@font-face {
+    font-family: "Iosevka Medium";
+    src: url(/fonts/Iosevka/iosevka-medium.ttf);
+}
+
+/*
+    Material Icons
+*/
+
+@font-face {
+    font-family: 'Material Icons';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/MaterialIcons/MaterialIcons-Regular.woff2) format('woff2'),
+         url(/fonts/MaterialIcons/MaterialIcons-Regular.woff) format('woff'),
+         url(/fonts/MaterialIcons/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;  /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+
+/*
+    Other stuff
+*/
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--bg-primary);
+    color: #FFFFFF;
+    font-family: "Fira Sans";
+    margin: 0;
+}
+
+header, footer {
+    background-color: var(--fg-primary);
+    color: var(--bg-primary);
+    padding: 1rem;
+}
+
+header a {
+    color: var(--bg-primary);
+    font-size: 2em;
+    text-decoration: none;
+}
+
+h1, h2, h3 {
+    margin: 0;
+}
+
+main {
+    padding: 2rem 5vw;
+}
+
+button, .button {
+    background-color: var(--fg-secondary);
+    border: none;
+    border-radius: 3px;
+    color: var(--bg-primary);
+    cursor: pointer;
+    font-family: "Iosevka Medium";
+    font-size: 1em;
+    padding: 0.5rem 1.5rem;
+    text-decoration: none;
+}
+
+button:hover, .button:hover {
+    box-shadow: 0px 0px 8px 5px rgba(15, 15, 15, 1);
+}
+
+/*
+    Home page
+*/
+
+#slide1 {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.25rem;
+    height: 100vh;
+    justify-content: space-evenly;
+    text-align: center;
+}
+
+#slide1 h3 {
+    margin-top: 0.3rem;
+}
+
+#slide1 > div:last-child {
+    display: flex;
+    justify-content: center;
+}
+
+#slide1 > div:last-child div {
+    width: 10vw;
+}
+
+/*
+    Sign in and sign up forms
+*/
+
+#form {
+    background-color: var(--bg-secondary);
+    border-radius: 3px;
+    box-shadow: 0px 0px 6px 2px rgba(15, 15, 15, 1);
+    width: 50vw;
+    margin: auto;
+}
+
+#form h1 {
+    background-color: var(--fg-secondary);
+    border-radius: 3px 3px 0 0;
+    color: var(--bg-primary);
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.formInput {
+    position: relative;
+    padding: 2rem 0 1rem 0;
+    margin: 0 1rem 0 1.5rem;
+}
+
+.formInput i {
+    position: absolute;
+    top: 2.8rem;
+}
+
+.formInput .error-icon, .formInput .helper-text {
+    display: none;
+}
+
+.formInput label {
+    background-color: var(--bg-secondary);
+    background-image: url('/images/textures/brushed-alum-dark.png');
+    color: #AFAFAF;
+    cursor: text;
+    position: absolute;
+    top: 3rem;
+    left: 3.5rem;
+}
+
+.formInput input, .formInput select {
+    appearance: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-color: #00000000;
+    border: 1pt solid #AFAFAF;
+    border-radius: 4px;
+    color: #AFAFAF;
+    margin-left: 2.5rem;
+    padding: 1rem;
+    width: calc(100% - 6rem);
+}
+
+.formInput select {
+    width: calc(100% - 4rem);
+}
+
+.formInput input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.formInput input[type="number"]:hover {
+    -moz-appearance: number-input;
+}
+
+.formInput input:hover, .formInput select:hover {
+    border-color: #FFFFFF;
+}
+
+.formInput input:focus, .formInput select:focus {
+    border: 2px solid #00C853;
+    caret-color: #00C853;
+    color: #FFFFFF;
+    outline: none;
+    outline-offset: 0;
+    padding: calc(1rem - 1px);
+
+}
+
+.formInput input:focus + label, .formInput select:focus + label {
+    color: #00C853;
+}
+
+.formInput.error input, .formInput input:invalid {
+    border-color: var(--error);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.formInput.error input + label, .formInput input:invalid + label {
+    color: var(--error);
+}
+
+.formInput.error input ~ .error-icon, .formInput input:invalid ~ .error-icon {
+    display: initial;
+    color: var(--error);
+    position: absolute;
+    top: 2.8rem;
+    right: 3rem;
+}
+
+.formInput.error input ~ .helper-text, .formInput input:invalid ~ .helper-text {
+    display: initial;
+    color: var(--error);
+    font-size: 0.75rem;
+    position: absolute;
+    top: 5.5rem;
+    left: 2.8rem;
+}
+
+.formInput.error input:focus, .formInput input:invalid:focus {
+    border-color: var(--error);
+    caret-color: var(--error);
+}
+
+.formInput.error input:focus + label, .formInput input:invalid:focus + label {
+    color: var(--error);
+}
+
+#form .buttons {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 2.2rem;
+}
+
+#form .buttons button:first-child {
+    margin-right: 5px;
+}
+
+#form p {
+    margin-left: 2rem;
+}
+
+#form a {
+    color: #FFFFFF !important;
+}

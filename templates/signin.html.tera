@@ -1,0 +1,27 @@
+{% extends 'layout' %}
+
+{% block title %}Sign in | Dysmey{% endblock %}
+
+{% block body %}
+<form id="form">
+    <h1>Sign In</h1>
+    <div class="formInput">
+        <i class="material-icons">mail</i>
+        <input id="email" type="email" autocomplete="off">
+        <label for="email">Email</label>
+        <i class="material-icons error-icon">error</i>
+        <div class="helper-text">Enter a valid email address</div>
+    </div>
+    <div class="formInput">
+        <i class="material-icons">lock</i>
+        <input id="password" type="password" autocomplete="off">
+        <label for="password">Password</label>
+    </div>
+    <br>
+    <div class="buttons">
+        <button>Sign In</button>
+    </div>
+    <p>Not registered yet? <a href="/signup">Sign up</a> now!</p>
+    <br>
+</form>
+{% endblock %}
