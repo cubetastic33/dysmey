@@ -23,6 +23,7 @@ use db_operations::*;
 #[derive(Serialize)]
 struct Context {
     email: Option<String>,
+    photo: Option<String>,
 }
 
 #[derive(FromForm)]

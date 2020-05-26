@@ -114,6 +114,7 @@ impl Context {
                     // If the credentials are correct
                     return Context {
                         email: Some(email.value().to_owned()),
+                        photo: Some(format!("https://www.gravatar.com/avatar/{:x}?s=200&d=retro", md5::compute(email.value()))),
                     };
                 }
             }
@@ -121,6 +122,7 @@ impl Context {
         // The credentials were wrong/absent
         Context {
             email: None,
+            photo: None,
         }
     }
 }

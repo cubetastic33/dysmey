@@ -88,9 +88,19 @@ header, footer {
     padding: 1rem;
 }
 
-header a {
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+header a:not(#profileButton) {
     color: var(--bg-primary);
     font-size: 2em;
+    text-decoration: none;
+}
+
+#profileButton {
+    color: var(--bg-primary);
     text-decoration: none;
 }
 
@@ -224,6 +234,10 @@ button:hover, .button:hover {
 
 .formInput input[type="number"]:hover {
     -moz-appearance: number-input;
+}
+
+.formInput input[type="password"] {
+    font-size: 0.7rem;
 }
 
 .formInput input:hover, .formInput select:hover {

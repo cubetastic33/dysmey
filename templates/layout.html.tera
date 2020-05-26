@@ -12,9 +12,13 @@
     <header>
         <a href="/">Dysmey</a>
         {% if email %}
-        <a href="/profile">Profile</a>
+        <a href="/profile" id="profileButton">
+            <img src="{{ photo }}" alt="profile picture">
+        </a>
         {% else %}
-        <a href="/signin">Sign in</a>
+        <a href="/signin" id="profileButton">
+            <i class="material-icons">account_circle</i>
+        </a>
         {% endif %}
     </header>
     <main>
