@@ -118,6 +118,18 @@ button:hover, .button:hover {
     box-shadow: 0px 0px 8px 5px rgba(15, 15, 15, 1);
 }
 
+#toast {
+    display: none;
+    background-color: #212121;
+    border-radius: 3px 3px 0 0;
+    color: #FFFFFF;
+    padding: 0.75rem 1rem;
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 0);
+}
+
 /*
     Home page
 */

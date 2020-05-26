@@ -1,4 +1,4 @@
-use super::UserDetails;
+use super::{UserDetails, Context};
 use argon2::{self, Config};
 use postgres::Client;
 use rand::prelude::*;
@@ -12,7 +12,7 @@ use rocket::{
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
     email VARCHAR (100) UNIQUE NOT NULL,
-    password CHAR (62) NOT NULL
+    password_hash CHAR (62) NOT NULL
 )
 
 CREATE TABLE IF NOT EXISTS trackers (
@@ -33,42 +33,6 @@ CREATE TABLE IF NOT EXISTS tracked_visits (
 
 // Function to check if the email is available
 pub fn email_available(client: &mut Client, email: &str) -> bool {
-    client.execute("DROP TABLE tracked_visits", &[]).unwrap();
-    client.execute("DROP TABLE trackers", &[]).unwrap();
-    client.execute("DROP TABLE users", &[]).unwrap();
-    client
-        .execute(
-            "CREATE TABLE IF NOT EXISTS users (
-            id SERIAL PRIMARY KEY,
-            email VARCHAR (100) UNIQUE NOT NULL,
-            password_hash CHAR (62) NOT NULL
-        )",
-            &[],
-        )
-        .unwrap();
-    client
-        .execute(
-            "CREATE TABLE IF NOT EXISTS trackers (
-                id VARCHAR (8) PRIMARY KEY,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                description VARCHAR (600)
-            )",
-            &[],
-        )
-        .unwrap();
-    client
-        .execute(
-            "CREATE TABLE IF NOT EXISTS tracked_visits (
-                visit_id SERIAL PRIMARY KEY,
-                tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
-                time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                ip_address VARCHAR NOT NULL,
-                user_agent VARCHAR NOT NULL
-            )",
-            &[],
-        )
-        .unwrap();
     if email.len() == 0 {
         // The email has length 0
         return false;
@@ -144,4 +108,32 @@ pub fn signin_user(
         }
     }
     return String::from("Invalid credentials");
+}
+
+// Function to sign a user out
+pub fn signout_user(mut cookies: Cookies) -> String {
+    cookies.remove_private(Cookie::named("email"));
+    cookies.remove_private(Cookie::named("hash"));
+    String::from("Success")
+}
+
+impl Context {
+    pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        if let Some(email) = cookies.get_private("email") {
+            if let Some(hash) = cookies.get_private("hash") {
+                // If the email and hash cookies are present
+                let rows = client.query("SELECT FROM users WHERE email = $1 AND password_hash = $2", &[&email.value(), &hash.value()]);
+                if !rows.unwrap().is_empty() {
+                    // If the credentials are correct
+                    return Context {
+                        email: Some(email.value().to_owned()),
+                    };
+                }
+            }
+        }
+        // The credentials were wrong/absent
+        Context {
+            email: None,
+        }
+    }
 }

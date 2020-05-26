@@ -3,7 +3,7 @@
 {% block title %}Sign in | Dysmey{% endblock %}
 
 {% block body %}
-<form id="form">
+<form id="form signin">
     <h1>Sign In</h1>
     <div class="formInput">
         <i class="material-icons">mail</i>
@@ -19,9 +19,13 @@
     </div>
     <br>
     <div class="buttons">
-        <button>Sign In</button>
+        <button id="signinButton">Sign In</button>
     </div>
     <p>Not registered yet? <a href="/signup">Sign up</a> now!</p>
     <br>
 </form>
+{% endblock %}
+
+{% block javascript %}
+<script src="/scripts/profile.js"></script>
 {% endblock %}

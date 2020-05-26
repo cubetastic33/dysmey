@@ -21,7 +21,7 @@ header {
     <div>
         <a href="#faq" class="button">FAQ</a>
         <div></div>
-        <a href="/signup" class="button">Get started</a>
+        <a href="/{% if email %}profile{% else %}signup{% endif %}" class="button">Get started</a>
     </div>
 </div>
 <h1 id="faq">FAQ</h1>

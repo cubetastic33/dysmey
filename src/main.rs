@@ -21,7 +21,9 @@ mod db_operations;
 use db_operations::*;
 
 #[derive(Serialize)]
-struct Context {}
+struct Context {
+    email: Option<String>,
+}
 
 #[derive(FromForm)]
 pub struct UserDetails {
@@ -60,30 +62,30 @@ impl<'a, 'r> FromRequest<'a, 'r> for IpAddr {
 }
 
 #[get("/")]
-fn get_index(client: State<Mutex<Client>>) -> Template {
+fn get_index(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
     email_available(&mut client.lock().unwrap(), "");
-    Template::render("index", Context {})
+    Template::render("index", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
 #[get("/signin")]
-fn get_signin() -> Template {
-    Template::render("signin", Context {})
+fn get_signin(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
+    Template::render("signin", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
 #[get("/signup")]
-fn get_signup() -> Template {
-    Template::render("signup", Context {})
+fn get_signup(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
+    Template::render("signup", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
 #[get("/profile")]
-fn get_profile() -> Template {
-    Template::render("profile", Context {})
+fn get_profile(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
+    Template::render("profile", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
 #[get("/status/<tracking_id>")]
-fn get_status(tracking_id: String) -> Template {
+fn get_status(client: State<Mutex<Client>>, cookies: Cookies, tracking_id: String) -> Template {
     println!("Tracking ID: {}", tracking_id);
-    Template::render("status", Context {})
+    Template::render("status", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
 #[get("/track/<tracking_id>")]
@@ -127,6 +129,11 @@ fn post_signup(
     signup_user(&mut client.lock().unwrap(), user_details, cookies)
 }
 
+#[post("/signout")]
+fn post_signout(cookies: Cookies) -> String {
+    signout_user(cookies)
+}
+
 fn configure() -> Config {
     // Configure Rocket to serve on the port requested by Heroku.
     let mut config = Config::active().expect("could not load configuration");
@@ -155,6 +162,7 @@ fn rocket() -> rocket::Rocket {
                 get_track,
                 post_signin,
                 post_signup,
+                post_signout,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

@@ -3,7 +3,7 @@
 {% block title %}Sign up | Dysmey{% endblock %}
 
 {% block body %}
-<form id="form">
+<form id="form signup">
     <h1>Sign Up</h1>
     <div class="formInput">
         <i class="material-icons">mail</i>
@@ -16,17 +16,25 @@
         <i class="material-icons">lock</i>
         <input id="password" type="password" autocomplete="off">
         <label for="password">Password</label>
+        <i class="material-icons error-icon">error</i>
+        <div class="helper-text">The password has to be at least 8 characters long</div>
     </div>
     <div class="formInput">
         <i class="material-icons">lock</i>
         <input id="confirmPassword" type="password" autocomplete="off">
         <label for="confirmPassword">Confirm Password</label>
+        <i class="material-icons error-icon">error</i>
+        <div class="helper-text">The passwords aren't matching</div>
     </div>
     <br>
     <div class="buttons">
-        <button>Sign Up</button>
+        <button id="signupButton">Sign Up</button>
     </div>
     <p>Already registered? <a href="/signin">Sign in</a> now!</p>
     <br>
 </form>
+{% endblock %}
+
+{% block javascript %}
+<script src="/scripts/profile.js"></script>
 {% endblock %}
