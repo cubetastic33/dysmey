@@ -8,12 +8,14 @@ use chrono::prelude::*;
 use rocket::{
     request::{self, FromRequest, Request},
     response::{self, NamedFile, Responder},
-    Config, Outcome, Response,
+    Config, State, Outcome, Response,
 };
 use rocket_contrib::{serve::StaticFiles, templates::Template};
 use std::{env, sync::Mutex};
 
 mod db_operations;
+
+use db_operations::*;
 
 #[derive(Serialize)]
 struct Context {}
@@ -49,7 +51,8 @@ impl<'a, 'r> FromRequest<'a, 'r> for IpAddr {
 }
 
 #[get("/")]
-fn get_index() -> Template {
+fn get_index(client: State<Mutex<Client>>) -> Template {
+    email_available(&mut client.lock().unwrap(), "");
     Template::render("index", Context {})
 }
 

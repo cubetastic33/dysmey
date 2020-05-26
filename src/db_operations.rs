@@ -2,6 +2,15 @@ use postgres::Client;
 
 // Function to check if the email is available
 pub fn email_available(client: &mut Client, email: &str) -> bool {
+    println!("execute: {}", client.execute(
+        "CREATE TABLE IF NOT EXISTS users (
+            id serial PRIMARY KEY,
+            email VARCHAR (100) UNIQUE NOT NULL,
+            password CHAR (62) NOT NULL,
+            salt BIGINT NOT NULL
+        )",
+        &[]
+    ).unwrap());
     if email.len() == 0 {
         // The email has length 0
         return false;

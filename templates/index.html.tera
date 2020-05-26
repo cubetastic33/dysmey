@@ -1,7 +1,7 @@
 {% extends 'layout' %}
 
 {% block head %}
-<meta name="description" content="Get read receipts for your email!">
+<meta name="description" content="Read receipts for email">
 {% endblock %}
 
 {% block body %}
@@ -21,7 +21,7 @@ header {
     <div>
         <a href="#faq" class="button">FAQ</a>
         <div></div>
-        <a href="/signin" class="button">Get started</a>
+        <a href="/signup" class="button">Get started</a>
     </div>
 </div>
 <h1 id="faq">FAQ</h1>
