@@ -279,20 +279,20 @@ button:hover, .button:hover {
     color: var(--error);
 }
 
-#form .buttons {
+#signinForm .buttons, #signupForm .buttons {
     display: flex;
     justify-content: flex-end;
     padding-right: 2.2rem;
 }
 
-#form .buttons button:first-child {
+#signinButton, #signupButton {
     margin-right: 5px;
 }
 
-#form p {
+#signinForm p, #signupForm p {
     margin-left: 2rem;
 }
 
-#form a {
+#signinForm a, #signupForm a {
     color: #FFFFFF !important;
 }
