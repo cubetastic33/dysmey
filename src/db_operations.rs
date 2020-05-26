@@ -56,7 +56,7 @@ pub fn email_available(client: &mut Client, email: &str) -> bool {
 }
 
 // Function to create a user with the given details if they're valid
-pub fn create_user(
+pub fn signup_user(
     client: &mut Client,
     user_details: Form<UserDetails>,
     mut cookies: Cookies,

@@ -113,9 +113,18 @@ fn get_track(ip_address: IpAddr, tracking_id: String) -> EmptyImage {
 fn post_signin(
     client: State<Mutex<Client>>,
     user_details: Form<UserDetails>,
-    cookies: Cookies,
+    cookies: Cookies
 ) -> String {
     signin_user(&mut client.lock().unwrap(), user_details, cookies)
+}
+
+#[post("/signup", data = "<user_details>")]
+fn post_signup(
+    client: State<Mutex<Client>>,
+    user_details: Form<UserDetails>,
+    cookies: Cookies
+) -> String {
+    signup_user(&mut client.lock().unwrap(), user_details, cookies)
 }
 
 fn configure() -> Config {
@@ -143,7 +152,9 @@ fn rocket() -> rocket::Rocket {
                 get_signup,
                 get_profile,
                 get_status,
-                get_track
+                get_track,
+                post_signin,
+                post_signup,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))
