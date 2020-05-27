@@ -112,6 +112,19 @@ fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        client.execute("CREATE TABLE IF NOT EXISTS trackers (
+            id VARCHAR (8) PRIMARY KEY,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+            description VARCHAR (300)
+        )", &[]).unwrap();
+        client.execute("CREATE TABLE IF NOT EXISTS tracked_visits (
+            visit_id SERIAL PRIMARY KEY,
+            tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
+            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ip_address VARCHAR NOT NULL,
+            user_agent VARCHAR NOT NULL
+        )", &[]).unwrap();
         client.execute("DROP TABLE tracked_visits", &[]).unwrap();
         client.execute("DROP TABLE trackers", &[]).unwrap();
         client.execute("CREATE TABLE IF NOT EXISTS trackers (
