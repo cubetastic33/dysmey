@@ -1,6 +1,7 @@
 use super::{Context, NewTracker, RequestDetails, Tracker, TrackerRequest, UserDetails};
 use argon2::{self, Config};
 use postgres::Client;
+use chrono::NaiveDateTime;
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
 use rocket::{
@@ -216,9 +217,10 @@ impl Context {
                     &[email],
                 )
                 .unwrap() {
+                let created_at: NaiveDateTime = tracker_row.get(2);
                 let mut tracker = Tracker {
                     tracking_id: tracker_row.get(0),
-                    created_at: tracker_row.get(2),
+                    created_at: created_at.to_string(),
                     description: tracker_row.get(3),
                     requests: Vec::new(),
                 };
@@ -228,8 +230,9 @@ impl Context {
                         &[&tracker.tracking_id],
                     )
                     .unwrap() {
+                    let time: NaiveDateTime = tracked_request.get(2);
                     tracker.requests.push(TrackerRequest {
-                        time: tracked_request.get(2),
+                        time: time.to_string(),
                         ip_address: tracked_request.get(3),
                         user_agent: tracked_request.get(4),
                     });
