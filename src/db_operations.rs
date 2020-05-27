@@ -1,4 +1,4 @@
-use super::{Context, NewTracker, RequestDetails, Tracker, TrackerRequest, UserDetails};
+use super::{Context, TrackerInfo, RequestDetails, Tracker, TrackerRequest, UserDetails};
 use argon2::{self, Config};
 use postgres::Client;
 use chrono::NaiveDateTime;
@@ -130,7 +130,7 @@ pub fn new_tracking_id(client: &mut Client) -> String {
 // Function to register a tracker
 pub fn register_tracker(
     client: &mut Client,
-    new_tracker: Form<NewTracker>,
+    new_tracker: Form<TrackerInfo>,
     mut cookies: Cookies,
 ) -> String {
     if let Some(email) = cookies.get_private("email") {
@@ -161,7 +161,69 @@ pub fn register_tracker(
             }
         }
     }
-    String::from("Signed out")
+    String::from("Not signed in")
+}
+
+// Function to update the description of a tracker
+pub fn update_description(
+    client: &mut Client,
+    tracker_info: Form<TrackerInfo>,
+    mut cookies: Cookies,
+) -> String {
+    if let Some(email) = cookies.get_private("email") {
+        if let Some(hash) = cookies.get_private("hash") {
+            // If the email and hash cookies are present
+            if verify_credentials(client, email.value(), hash.value()) {
+                // If the credentials are correct
+                if client
+                    .query(
+                        "SELECT * FROM trackers WHERE id = $1 AND user_email = $2",
+                        &[&tracker_info.tracking_id, &email.value()],
+                    )
+                    .unwrap()
+                    .is_empty() {
+                    return format!("Tracking ID {} not found under user", tracker_info.tracking_id);
+                }
+                client
+                    .execute(
+                        "UPDATE trackers SET description = $1 WHERE id = $2",
+                        &[&tracker_info.description, &tracker_info.tracking_id],
+                    )
+                    .unwrap();
+                return String::from("Success");
+            }
+        }
+    }
+    String::from("Not signed in")
+}
+
+// Function to delete a tracker
+pub fn delete_tracker(client: &mut Client, tracking_id: String, mut cookies: Cookies) -> String {
+    if let Some(email) = cookies.get_private("email") {
+        if let Some(hash) = cookies.get_private("hash") {
+            // If the email and hash cookies are present
+            if verify_credentials(client, email.value(), hash.value()) {
+                // If the credentials are correct
+                if client
+                    .query(
+                        "SELECT * FROM trackers WHERE id = $1 AND user_email = $2",
+                        &[&tracking_id, &email.value()],
+                    )
+                    .unwrap()
+                    .is_empty() {
+                    return format!("Tracking ID {} not found under user", tracking_id);
+                }
+                client
+                    .execute(
+                        "DELETE FROM trackers WHERE id = $1",
+                        &[&tracking_id],
+                    )
+                    .unwrap();
+                return String::from("Success");
+            }
+        }
+    }
+    String::from("Not signed in")
 }
 
 // Function to save a request if it's being tracked

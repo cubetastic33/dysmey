@@ -126,9 +126,27 @@ a {
     margin: 1rem 0;
 }
 
-.trackingID {
+.editTracker:not(.disabled):hover, .deleteTracker:not(.disabled):hover {
+    cursor: pointer;
+}
+
+.editTracker.disabled, .deleteTracker.disabled {
+    cursor: default;
+    opacity: 0.75;
+}
+
+.editTracker:not(.disabled):hover {
+    color: #FFFF44;
+}
+
+.deleteTracker:not(.disabled):hover {
+    color: var(--error);
+}
+
+.trackingID, .time {
     font-family: monospace;
-    font-size: 1rem;
+    font-size: .9rem;
+    transform: translateY(.05rem);
 }
 
 .description {
@@ -137,6 +155,21 @@ a {
     white-space: nowrap;
     flex-grow: 1;
     text-align: center;
+}
+
+.description[contenteditable="true"] {
+    border: 1pt solid #AFAFAF;
+    border-radius: 3px;
+    margin: -.5rem;
+    padding: .5rem;
+}
+
+.description[contenteditable="true"]:focus {
+    border-color: #FFFFFF;
+}
+
+.description[contenteditable="true"] + .editTracker:not(.disabled):hover {
+    color: #00C853;
 }
 
 .time {

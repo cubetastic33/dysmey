@@ -48,7 +48,7 @@ pub struct UserDetails {
 }
 
 #[derive(FromForm)]
-pub struct NewTracker {
+pub struct TrackerInfo {
     tracking_id: String,
     description: String,
 }
@@ -156,13 +156,31 @@ fn post_new_tracking_id(client: State<Mutex<Client>>) -> String {
     new_tracking_id(&mut client.lock().unwrap())
 }
 
-#[post("/register_tracker", data = "<new_tracker>")]
+#[post("/register_tracker", data = "<tracker_info>")]
 fn post_register_tracker(
     client: State<Mutex<Client>>,
-    new_tracker: Form<NewTracker>,
-    cookies: Cookies,
+    tracker_info: Form<TrackerInfo>,
+    cookies: Cookies
 ) -> String {
-    register_tracker(&mut client.lock().unwrap(), new_tracker, cookies)
+    register_tracker(&mut client.lock().unwrap(), tracker_info, cookies)
+}
+
+#[post("/update_description", data = "<tracker_info>")]
+fn post_update_description(
+    client: State<Mutex<Client>>,
+    tracker_info: Form<TrackerInfo>,
+    cookies: Cookies
+) -> String {
+    update_description(&mut client.lock().unwrap(), tracker_info, cookies)
+}
+
+#[post("/delete_tracker", data = "<tracker_id>")]
+fn post_delete_tracker(
+    client: State<Mutex<Client>>,
+    tracker_id: String,
+    cookies: Cookies
+) -> String {
+    delete_tracker(&mut client.lock().unwrap(), tracker_id, cookies)
 }
 
 fn configure() -> Config {
@@ -195,6 +213,8 @@ fn rocket() -> rocket::Rocket {
                 post_signout,
                 post_new_tracking_id,
                 post_register_tracker,
+                post_update_description,
+                post_delete_tracker,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

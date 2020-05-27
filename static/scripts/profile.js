@@ -92,6 +92,7 @@ $("#profilePicture").click(function() {
 $("#addTrackerButton").click(function() {
     $(".overlay").show();
     $("#description").val("");
+    $("#description").parent().attr("class", "formInput");
     $.post("/new_tracking_id").done(function(result) {
         $("#imageURL").html("<b>Image URL:</b> https://dysmey.herokuapp.com/track/<span id=\"trackingID\">" + result + "</span>");
         $('#addTracker').show("slow");
@@ -101,6 +102,12 @@ $("#addTrackerButton").click(function() {
 
 $("#createNewTracker").click(function() {
     $(this).prop("disabled", true);
+    if ($("#description").val().length > 300) {
+        $("#description").parent().attr("class", "formInput error");
+        $(this).prop("disabled", false);
+        return;
+    }
+    $("#description").parent().attr("class", "formInput");
     $.ajax({
         type: "POST",
         url: "/register_tracker",
@@ -126,8 +133,54 @@ $('.overlay, #addTracker .textButton').click(function() {
     });
 });
 
-$(".tracker.expandable section").click(function() {
-    $(this).siblings("div").toggle();
+$(".tracker.expandable section").click(function(e) {
+    if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1) {
+        $(this).siblings("div").toggle();
+    }
+});
+
+$(".editTracker").click(function() {
+    if (!$(this).hasClass("disabled") && $(this).siblings(".description").attr("contenteditable") === "true") {
+        // Update description
+        $.post("/update_description", {
+            tracker_id: $(this).siblings(".trackerID").text(),
+            description: $(this).siblings(".description").text()
+        }).done(function(result) {
+            console.log(result);
+            if (result === "Success") {
+                location.reload();
+            } else {
+                showToast(result, 10000);
+            }
+        });
+    } else if (!$(this).hasClass("disabled")) {
+        $(".editTracker, .deleteTracker").addClass("disabled");
+        $(this).siblings(".description").attr("contenteditable", true);
+        $(this).removeClass("disabled");
+        $(this).siblings(".deleteTracker").removeClass("disabled");
+        $(this).text("check");
+        $(this).siblings(".deleteTracker").text("clear");
+    }
+});
+
+$(".deleteTracker").click(function() {
+    if (!$(this).hasClass("disabled") && $(this).siblings(".description").attr("contenteditable") === "true") {
+        // Undo contenteditable
+        $(".disabled").removeClass("disabled");
+        $(this).siblings(".description").attr("contenteditable", false);
+        $(this).siblings(".description").text($(this).siblings(".description").attr("data-description"));
+        $(this).text("delete");
+        $(this).siblings(".editTracker").text("edit");
+    } else if (!$(this).hasClass("disabled")) {
+        $.post("/delete_tracker", $(this).siblings(".trackingID").text()).done(function(result) {
+            console.log(result);
+            if (result == "Success") {
+                location.reload();
+            } else {
+                showToast(result, 10000);
+            }
+        });
+    }
 });
 
 $(".time").each(function() {

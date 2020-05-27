@@ -23,6 +23,8 @@
                 <i class="material-icons">comment</i>
                 <input type="text" id="description" autocomplete="off">
                 <label for="description">Description</label>
+                <i class="material-icons error-icon">error</i>
+                <div class="helper-text">Maximum 300 characters</div>
             </div>
             <div class="buttons">
                 <button type="button" class="textButton">Cancel</button>
@@ -66,13 +68,17 @@
                     {% endif %}
                 </i>
                 &nbsp;&nbsp;&nbsp;
-                <div class="description">
+                <div class="description" data-description="{% if tracker.description | length > 0 %}{{ tracker.description }}{% else %}No description{% endif %}">
                 {% if tracker.description | length > 0 %}
                     {{ tracker.description }}
                 {% else %}
                     No description
                 {% endif %}
                 </div>
+                &nbsp;&nbsp;&nbsp;
+                <i class="material-icons editTracker">edit</i>
+                &nbsp;&nbsp;&nbsp;
+                <i class="material-icons deleteTracker">delete</i>
                 &nbsp;&nbsp;&nbsp;
                 <div class="time">{{ tracker.created_at }}</div>
             </section>
