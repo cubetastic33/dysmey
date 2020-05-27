@@ -136,8 +136,7 @@ $(".time").each(function() {
     $(this).text(
         date.getFullYear()
         + "-"
-        + date.getMonth()
-        + 1
+        + (date.getMonth() + 1)
         + "-"
         + date.getDate()
         + " "
