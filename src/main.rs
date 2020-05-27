@@ -21,7 +21,7 @@ use db_operations::*;
 
 #[derive(Serialize)]
 struct TrackerRequest {
-    time: String,
+    time: i64,
     ip_address: String,
     user_agent: String,
 }
@@ -29,7 +29,7 @@ struct TrackerRequest {
 #[derive(Serialize)]
 struct Tracker {
     tracking_id: String,
-    created_at: String,
+    created_at: i64,
     description: String,
     requests: Vec<TrackerRequest>,
 }

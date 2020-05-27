@@ -130,6 +130,23 @@ $(".tracker.expandable section").click(function() {
     $(this).siblings("div").toggle();
 });
 
+$(".time").each(function() {
+    // Convert the timestamps to human-readable text
+    var date = new Date(parseInt($(this).text()) * 1000);
+    $(this).text(
+        date.getFullYear()
+        + "-"
+        + date.getMonth()
+        + 1
+        + "-"
+        + date.getDate()
+        + " "
+        + date.getHours().toString().padStart(2, 0)
+        + ":"
+        + date.getMinutes().toString().padStart(2, 0)
+    );
+});
+
 $("#signoutButton").click(function() {
     showToast("Please wait...");
     $.ajax({

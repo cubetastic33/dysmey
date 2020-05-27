@@ -220,7 +220,7 @@ impl Context {
                 let created_at: NaiveDateTime = tracker_row.get(2);
                 let mut tracker = Tracker {
                     tracking_id: tracker_row.get(0),
-                    created_at: created_at.to_string(),
+                    created_at: created_at.timestamp(),
                     description: tracker_row.get(3),
                     requests: Vec::new(),
                 };
@@ -232,7 +232,7 @@ impl Context {
                     .unwrap() {
                     let time: NaiveDateTime = tracked_request.get(2);
                     tracker.requests.push(TrackerRequest {
-                        time: time.to_string(),
+                        time: time.timestamp(),
                         ip_address: tracked_request.get(3),
                         user_agent: tracked_request.get(4),
                     });
