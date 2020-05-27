@@ -22,7 +22,7 @@
             <div class="formInput">
                 <i class="material-icons">comment</i>
                 <input type="text" id="description" autocomplete="off">
-                <label for="description">Description</label>
+                <label for="description">Description (optional)</label>
                 <i class="material-icons error-icon">error</i>
                 <div class="helper-text">Maximum 300 characters</div>
             </div>
