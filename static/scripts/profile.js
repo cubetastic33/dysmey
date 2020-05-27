@@ -172,7 +172,9 @@ $(".deleteTracker").click(function() {
         $(this).text("delete");
         $(this).siblings(".editTracker").text("edit");
     } else if (!$(this).hasClass("disabled")) {
-        $.post("/delete_tracker", $(this).siblings(".trackingID").text()).done(function(result) {
+        $.post("/delete_tracker", {
+            tracking_id: $(this).siblings(".trackingID").text()
+        }).done(function(result) {
             console.log(result);
             if (result == "Success") {
                 location.reload();

@@ -185,6 +185,10 @@ td {
     padding-top: .5rem;
 }
 
+td:nth-child(2) {
+    width: 100;
+}
+
 #imageURL {
     text-align: center;
 }
