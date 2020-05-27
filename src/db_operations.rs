@@ -117,7 +117,7 @@ impl Context {
         client.execute("CREATE TABLE IF NOT EXISTS trackers (
             id VARCHAR (8) PRIMARY KEY,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            user_email INT NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+            user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
             description VARCHAR (300)
         )", &[]).unwrap();
         client.execute("CREATE TABLE IF NOT EXISTS tracked_visits (
