@@ -311,17 +311,17 @@ button:disabled, .button:disabled {
     display: initial;
     color: var(--error);
     position: absolute;
-    top: 2.8em;
-    right: 3em;
+    top: 2.8rem;
+    right: 3rem;
 }
 
 .formInput.error input ~ .helper-text, .formInput input:invalid ~ .helper-text {
     display: initial;
     color: var(--error);
-    font-size: 0.75em;
+    font-size: 0.75rem;
     position: absolute;
-    top: 5.5em;
-    left: 2.8em;
+    top: 5.5rem;
+    left: 2.8rem;
 }
 
 .formInput.error input:focus, .formInput input:invalid:focus {
@@ -336,7 +336,7 @@ button:disabled, .button:disabled {
 #signinForm .buttons, #signupForm .buttons {
     display: flex;
     justify-content: flex-end;
-    padding-right: 2.2em;
+    padding-right: 2.2rem;
 }
 
 #signinButton, #signupButton {
@@ -344,7 +344,7 @@ button:disabled, .button:disabled {
 }
 
 #signinForm p, #signupForm p {
-    margin-left: 2em;
+    margin-left: 2rem;
 }
 
 #signinForm a, #signupForm a {
