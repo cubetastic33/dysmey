@@ -207,6 +207,10 @@ button:disabled, .button:disabled {
     width: 10vw;
 }
 
+#faq ~ p {
+    width: 80vw;
+}
+
 /*
     Forms
 */

@@ -26,6 +26,10 @@ header {
 </div>
 <h1 id="faq">FAQ</h1>
 <br>
+<h2>How do I pronounce dysmey?</h2>
+<p>
+    It's meant to be pronounced as 'dismay'
+</p>
 <h2>How does it work?</h2>
 <p>
     You add an invisible 1x1 image to your email, and we keep track of the requests
@@ -35,20 +39,20 @@ header {
 <h2>When should I use this?</h2>
 <p>
     Some users can consider read receipts to be a violation of their privacy, so keep
-    that in mind, and only use it when necessary.
+    that in mind, and only use them when necessary.
 </p>
 <br>
 <h2>Do I need to register with each email address I want to use this with?</h2>
 <p>
-    No. You can register once with one email address and use it with whatever email
-    addresses you'd like.
+    No. You can register once with one email address and use the service with whatever
+    email addresses you'd like.
 </p>
 <br>
 <h2>Are there any drawbacks to this?</h2>
 <p>
-    Because we're tracking all the requests, all the times you open the mail will also
-    be tracked. However, because the times and IP addresses are logged, you should be
-    able to identify which ones are you, and which ones aren't.
+    Because we're tracking all the requests, all the times that you open the mail will
+    also be tracked. However, because the times and IP addresses are logged, you should
+    be able to identify which ones are you, and which ones aren't.
     <br>
     <br>
     The IP address, however, is not guaranteed to belong to the person viewing the
