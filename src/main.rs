@@ -62,7 +62,7 @@ pub struct RequestDetails {
 struct EmptyImage {}
 
 #[derive(Debug)]
-enum RequestDetailsError {}
+pub enum RequestDetailsError {}
 
 impl<'r> Responder<'r> for EmptyImage {
     fn respond_to(self, req: &Request) -> response::Result<'r> {

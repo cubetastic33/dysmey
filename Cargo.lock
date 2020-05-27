@@ -274,7 +274,6 @@ dependencies = [
 name = "dysmey"
 version = "0.1.0"
 dependencies = [
- "chrono",
  "md5",
  "postgres",
  "rand",
