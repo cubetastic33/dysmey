@@ -112,7 +112,7 @@ fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
-        client.execute("DROP TABLE tracked_visits", &[]).unwrap();
+        client.execute("DROP TABLE tracked_requests", &[]).unwrap();
         client.execute("DROP TABLE trackers", &[]).unwrap();
         client.execute("CREATE TABLE IF NOT EXISTS trackers (
             id VARCHAR (8) PRIMARY KEY,
@@ -142,8 +142,8 @@ impl Context {
         }
         // The credentials were wrong/absent
         Context {
-            email: Some("aravkasi@gmail.com".to_owned()),
-            photo: Some(format!("https://www.gravatar.com/avatar/{:x}?d=retro", md5::compute("aravkasi@gmail.com"))),
+            email: None,
+            photo: None,
             trackers: Vec::new(),
         }
     }
