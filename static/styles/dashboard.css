@@ -160,6 +160,7 @@ a {
 .description[contenteditable="true"] {
     border: 1pt solid #AFAFAF;
     border-radius: 3px;
+    cursor: text;
     margin: -.5rem;
     padding: .5rem;
 }
