@@ -34,6 +34,19 @@
         </form>
     </div>
 </div>
+<div id="deleteConfirmation" class="dialog">
+    <div class="dialogContent">
+        <p>
+            Are you sure you want to delete the tracker? You will not be able to undo this.
+        </p>
+        <br>
+        <div class="buttons">
+            <button type="button" class="textButton">Cancel</button>
+            &nbsp;&nbsp;
+            <button type="button" id="confirmDelete">Yes</button>
+        </div>
+    </div>
+</div>
 <div class="overlay"></div>
 <div id="profileHeader">
     <img src="{{ photo | safe }}&s=512" id="profilePicture" alt="profile picture">

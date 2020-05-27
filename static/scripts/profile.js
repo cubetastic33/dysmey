@@ -127,7 +127,7 @@ $("#createNewTracker").click(function() {
     });
 });
 
-$('.overlay, #addTracker .textButton').click(function() {
+$('.overlay, #addTracker .textButton, #deleteConfirmation .textButton').click(function() {
     $(".dialog").hide("slow", function() {
         $(".overlay").hide()
     });
@@ -141,9 +141,10 @@ $(".tracker.expandable section").click(function(e) {
 
 $(".editTracker").click(function() {
     if (!$(this).hasClass("disabled") && $(this).siblings(".description").attr("contenteditable") === "true") {
+        showToast("Please wait...", 3000);
         // Update description
         $.post("/update_description", {
-            tracker_id: $(this).siblings(".trackerID").text(),
+            tracking_id: $(this).siblings(".trackerID").text(),
             description: $(this).siblings(".description").text()
         }).done(function(result) {
             console.log(result);
@@ -172,17 +173,24 @@ $(".deleteTracker").click(function() {
         $(this).text("delete");
         $(this).siblings(".editTracker").text("edit");
     } else if (!$(this).hasClass("disabled")) {
-        $.post("/delete_tracker", {
-            tracking_id: $(this).siblings(".trackingID").text()
-        }).done(function(result) {
-            console.log(result);
-            if (result == "Success") {
-                location.reload();
-            } else {
-                showToast(result, 10000);
-            }
-        });
+        $(".overlay").show();
+        $("#deleteConfirmation").show("slow");
+        $("#confirmDelete").attr("data-tracking-id", $(this).siblings(".trackingID").text());
     }
+});
+
+$("#confirmDelete").click(function() {
+    showToast("Please wait...", 3000);
+    $.post("/delete_tracker", {
+        tracking_id: $(this).attr("data-tracking-id"),
+    }).done(function(result) {
+        console.log(result);
+        if (result == "Success") {
+            location.reload();
+        } else {
+            showToast(result, 10000);
+        }
+    });
 });
 
 $(".time").each(function() {

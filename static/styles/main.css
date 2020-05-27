@@ -178,6 +178,7 @@ button:disabled, .button:disabled {
     left: 50%;
     bottom: 0;
     transform: translate(-50%, 0);
+    z-index: 10;
 }
 
 /*

@@ -201,9 +201,17 @@ td:nth-child(2) {
     background-color: #000000;
 }
 
+#deleteConfirmation p {
+    text-align: center;
+    width: 100%;
+}
+
 .buttons {
     display: flex;
     justify-content: right;
+}
+
+form .buttons {
     margin-right: 1rem;
 }
 
