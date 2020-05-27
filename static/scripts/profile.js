@@ -100,11 +100,12 @@ $("#addTrackerButton").click(function() {
     });
 });
 
-$("#createNewTracker").click(function() {
-    $(this).prop("disabled", true);
+$("#addTracker form").submit(function(e) {
+    e.preventDefault();
+    $("#createNewTracker").prop("disabled", true);
     if ($("#description").val().length > 300) {
         $("#description").parent().attr("class", "formInput error");
-        $(this).prop("disabled", false);
+        $("#createNewTracker").prop("disabled", false);
         return;
     }
     $("#description").parent().attr("class", "formInput");
