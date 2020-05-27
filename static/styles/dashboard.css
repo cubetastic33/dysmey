@@ -1,0 +1,197 @@
+main {
+    padding: 0;
+}
+
+a {
+    color: #9ba2f2;
+    text-decoration: none;
+}
+
+#profileHeader {
+    background-color: var(--bg-secondary);
+    background-image: url(/images/brushed-alum-dark.png);
+    background-attachment: fixed;
+    box-shadow: inset 0 0px 4px 3px rgba(15, 15, 15, 0.7);
+    display: flex;
+    font-size: 1rem;
+    justify-content: center;
+    min-height: 20vmin;
+    padding: 2rem;
+}
+
+#profileHeader img {
+    border: 2px solid #000000;
+    border-radius: 100%;
+    box-shadow: 0px 0px 4px 3px rgba(15, 15, 15, 0.7);
+    cursor: pointer;
+    height: 20vmin;
+    width: 20vmin;
+}
+
+#profileHeader .infoColumn {
+    display: flex;
+    flex-direction: column;
+    font-size: 1.3rem;
+    padding-left: 5vw;
+    justify-content: space-evenly;
+}
+
+#profileHeader .infoColumn button {
+    font-size: 1.1rem;
+    box-shadow: 0px 0px 3px 3px rgba(15, 15, 15, 1);
+}
+
+#profileHeader .infoColumn button:hover {
+    box-shadow: 0px 0px 8px 5px rgba(15, 15, 15, 1);
+}
+
+#profileBody {
+    padding: 2rem 5vw 1rem 5vw;
+    min-height: calc(100vh - 20vmin - 14.9rem);
+}
+
+#addTrackerButton {
+    background-color: #282828;
+    color: #FFFFFF;
+    display: block;
+    margin: 1rem auto;
+}
+
+#addTrackerButton:hover {
+    background-color: #343434;
+}
+
+.filter {
+    position: relative;
+    font-size: 0.9rem;
+}
+
+.filter label {
+    color: #AFAFAF;
+    position: absolute;
+    top: calc(0.55rem + 1pt);
+    left: 0.6rem;
+}
+
+#filter {
+    background: transparent;
+    border: 1pt solid #AFAFAF;
+    border-radius: 3px;
+    color: #FFFFFF;
+    outline: none;
+    outline-offset: 0;
+    padding: 0.5rem 0.5rem 0.5rem 3rem;
+    width: calc(100% - 3.5rem - 2pt);
+}
+
+#filter:focus {
+    border-color: #FFFFFF;
+}
+
+#trackers {
+    padding: 0;
+    list-style-type: none;
+}
+
+.tracker {
+    background-color: #313131;
+    border-radius: 3px;
+    padding: 1rem;
+    margin: 0.75rem 0;
+}
+
+.tracker.expandable section {
+    cursor: pointer;
+}
+
+.tracker section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tracker.expandable:hover {
+    box-shadow: 0px 0px 4px 4px rgba(25, 25, 25, .9);
+}
+
+.tracker.expandable > div {
+    display: none;
+}
+
+.tracker i {
+    margin-top: -3px;
+}
+
+.tracker hr {
+    margin: 1rem 0;
+}
+
+.description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.time {
+    white-space: nowrap;
+}
+
+table {
+    width: 100%;
+    border-spacing: .5rem;
+}
+
+td {
+    padding-top: .5rem;
+}
+
+#imageURL {
+    text-align: center;
+}
+
+.formInput {
+    margin: 0;
+}
+
+.formInput label {
+    background-color: #000000;
+}
+
+.buttons {
+    display: flex;
+    justify-content: right;
+    margin-right: 1rem;
+}
+
+.dialog {
+    background-color: #000000;
+    border-radius: 4px;
+    box-shadow: 0px 0px 12px 8px rgba(15, 15, 15, 1);
+    display: none;
+    max-height: calc(95vmin - 2rem);
+    min-width: 50%;
+    max-width: calc(95vmin - 2rem);
+    overflow: auto;
+    padding: 1rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 11;
+}
+
+.dialog .dialogContent {
+    padding: 1rem;
+}
+
+.overlay {
+    background-color: #00000066;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+}

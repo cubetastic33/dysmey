@@ -26,8 +26,8 @@ $('.formInput input, .formInput select').each(function() {
 
 $("#signinForm").submit(function(e) {
     e.preventDefault();
-    $('#signinButton').prop('disabled', true);
-    showToast('Please wait...', 5000);
+    $("#signinButton").prop("disabled", true);
+    showToast("Please wait...", 5000);
     $.ajax({
         type: "POST",
         url: "/signin",
@@ -41,7 +41,7 @@ $("#signinForm").submit(function(e) {
                 window.location.href = "/";
             } else {
                 showToast(result, 10000);
-                $('#signinButton').prop('disabled', false);
+                $("#signinButton").prop("disabled", false);
             }
         }
     });
@@ -59,10 +59,10 @@ $("#signupForm").submit(function(e) {
     if ($("#password").val() !== $("#confirmPassword").val()) {
         $("#password").parent().attr("class", "formInput");
         $("#confirmPassword").parent().attr("class", "formInput error");
-        $('#signupButton').prop('disabled', false);
+        $("#signupButton").prop("disabled", false);
         return;
     }
-    showToast('Please wait...', 5000);
+    showToast("Please wait...", 5000);
     $("#password").parent().attr("class", "formInput");
     $("#confirmPassword").parent().attr("class", "formInput");
     $.ajax({
@@ -78,7 +78,67 @@ $("#signupForm").submit(function(e) {
                 window.location.href = "/";
             } else {
                 showToast(result, 10000);
-                $('#signupButton').prop('disabled', false);
+                $("#signupButton").prop("disabled", false);
+            }
+        }
+    });
+});
+
+$("#profilePicture").click(function() {
+    $(".overlay").show();
+    $("#profilePictureInfo").show("slow");
+});
+
+$("#addTrackerButton").click(function() {
+    $(".overlay").show();
+    $("#description").val("");
+    $.post("/new_tracking_id").done(function(result) {
+        $("#imageURL").html("<b>Image URL:</b> https://dysmey.herokuapp.com/track/<span id=\"trackingID\">" + result + "</span>");
+        $('#addTracker').show("slow");
+        $("#description").focus();
+    });
+});
+
+$("#createNewTracker").click(function() {
+    $(this).prop("disabled", true);
+    $.ajax({
+        type: "POST",
+        url: "/register_tracker",
+        data: {
+            tracking_id: $("#trackingID").text(),
+            description: $("#description").val(),
+        },
+        success: function(result) {
+            console.log(result);
+            if (result == "Success") {
+                location.reload();
+            } else {
+                showToast(result, 10000);
+                $("#createNewTracker").prop("disabled", false);
+            }
+        }
+    });
+});
+
+$('.overlay, #addTracker .textButton').click(function() {
+    $(".dialog").hide("slow", function() {
+        $(".overlay").hide()
+    });
+});
+
+$(".tracker.expandable section").click(function() {
+    $(this).siblings("div").toggle();
+});
+
+$("#signoutButton").click(function() {
+    showToast("Please wait...");
+    $.ajax({
+        type: "POST",
+        url: "/signout",
+        success: function(result) {
+            console.log(result);
+            if (result == "Success") {
+                window.location.href = "/";
             }
         }
     });

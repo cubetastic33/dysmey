@@ -1,4 +1,4 @@
-use super::{UserDetails, Tracker, TrackerRequest, Context};
+use super::{Context, NewTracker, RequestDetails, Tracker, TrackerRequest, UserDetails};
 use argon2::{self, Config};
 use postgres::Client;
 use rand::prelude::*;
@@ -83,10 +83,7 @@ pub fn signin_user(
         if !rows.is_empty() {
             // Compare passwords if email exists
             let password_hash: String = rows.get(0).unwrap().get(0);
-            if argon2::verify_encoded(
-                &password_hash,
-                user_details.password.as_bytes()
-            ).unwrap() {
+            if argon2::verify_encoded(&password_hash, user_details.password.as_bytes()).unwrap() {
                 // If the credentials are correct, create the cookies to sign the user in
                 cookies.add_private(Cookie::new("email", user_details.email.clone()));
                 cookies.add_private(Cookie::new("hash", password_hash));
@@ -106,27 +103,86 @@ pub fn signout_user(mut cookies: Cookies) -> String {
 
 // Function to verify if the given credentials are correct
 fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
-    let rows = client.query("SELECT FROM users WHERE email = $1 AND password_hash = $2", &[&email, &hash]);
+    let rows = client.query(
+        "SELECT FROM users WHERE email = $1 AND password_hash = $2",
+        &[&email, &hash],
+    );
     !rows.unwrap().is_empty()
+}
+
+// Function to get a new tracking ID
+pub fn new_tracking_id(client: &mut Client) -> String {
+    let mut rng = thread_rng();
+    let mut tracking_id = format!("{:x}", rng.gen_range(0x10000000, 0xFFFFFFFF_u32));
+    let mut rows = client
+        .query("SELECT * FROM trackers WHERE id = $1", &[&tracking_id])
+        .unwrap();
+    while !rows.is_empty() {
+        tracking_id = format!("{:x}", rng.gen_range(0x10000000, 0xFFFFFFFF_u32));
+        rows = client
+            .query("SELECT * FROM trackers WHERE id = $1", &[&tracking_id])
+            .unwrap();
+    }
+    tracking_id
+}
+
+// Function to register a tracker
+pub fn register_tracker(
+    client: &mut Client,
+    new_tracker: Form<NewTracker>,
+    mut cookies: Cookies,
+) -> String {
+    if let Some(email) = cookies.get_private("email") {
+        if let Some(hash) = cookies.get_private("hash") {
+            // If the email and hash cookies are present
+            if verify_credentials(client, email.value(), hash.value()) {
+                // If the credentials are correct
+                if !client
+                    .query(
+                        "SELECT * FROM trackers WHERE id = $1",
+                        &[&new_tracker.tracking_id],
+                    )
+                    .unwrap()
+                    .is_empty() {
+                    return format!("Tracking ID {} already in use", new_tracker.tracking_id);
+                }
+                client
+                    .execute(
+                        "INSERT INTO trackers VALUES ($1, $2, DEFAULT, $3)",
+                        &[
+                            &new_tracker.tracking_id,
+                            &email.value(),
+                            &new_tracker.description,
+                        ],
+                    )
+                    .unwrap();
+                return String::from("Success");
+            }
+        }
+    }
+    String::from("Signed out")
+}
+
+// Function to save a request if it's being tracked
+pub fn save_request(client: &mut Client, tracking_id: String, request_details: RequestDetails) {
+    if let Some(_) = client
+        .query_opt("SELECT * FROM trackers WHERE id = $1", &[&tracking_id])
+        .unwrap() {
+        client
+            .execute(
+                "INSERT INTO tracked_requests VALUES (DEFAULT, $1, DEFAULT, $2, $3)",
+                &[
+                    &tracking_id,
+                    &request_details.ip_address,
+                    &request_details.user_agent,
+                ],
+            )
+            .unwrap();
+    }
 }
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
-        client.execute("DROP TABLE tracked_requests", &[]).unwrap();
-        client.execute("DROP TABLE trackers", &[]).unwrap();
-        client.execute("CREATE TABLE IF NOT EXISTS trackers (
-            id VARCHAR (8) PRIMARY KEY,
-            user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            description VARCHAR (300)
-        )", &[]).unwrap();
-        client.execute("CREATE TABLE IF NOT EXISTS tracked_requests (
-            request_id SERIAL PRIMARY KEY,
-            tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
-            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ip_address VARCHAR NOT NULL,
-            user_agent VARCHAR NOT NULL
-        )", &[]).unwrap();
         if let Some(email) = cookies.get_private("email") {
             if let Some(hash) = cookies.get_private("hash") {
                 // If the email and hash cookies are present
@@ -134,7 +190,10 @@ impl Context {
                     // If the credentials are correct
                     return Context {
                         email: Some(email.value().to_owned()),
-                        photo: Some(format!("https://www.gravatar.com/avatar/{:x}?d=retro", md5::compute(email.value().to_lowercase()))),
+                        photo: Some(format!(
+                            "https://www.gravatar.com/avatar/{:x}?d=retro",
+                            md5::compute(email.value().to_lowercase())
+                        )),
                         trackers: Vec::new(),
                     };
                 }
@@ -153,7 +212,7 @@ impl Context {
         if let Some(email) = &self.email {
             for tracker_row in client
                 .query(
-                    "SELECT * FROM trackers WHERE user_email = $1",
+                    "SELECT * FROM trackers WHERE user_email = $1 ORDER BY created_at DESC",
                     &[email],
                 )
                 .unwrap() {
@@ -163,7 +222,12 @@ impl Context {
                     description: tracker_row.get(3),
                     requests: Vec::new(),
                 };
-                for tracked_request in client.query("SELECT * FROM tracked_requests WHERE tracking_id = $1",&[]).unwrap() {
+                for tracked_request in client
+                    .query(
+                        "SELECT * FROM tracked_requests WHERE tracking_id = $1 ORDER BY time DESC",
+                        &[&tracker.tracking_id],
+                    )
+                    .unwrap() {
                     tracker.requests.push(TrackerRequest {
                         time: tracked_request.get(2),
                         ip_address: tracked_request.get(3),

@@ -1,0 +1,106 @@
+{% extends 'layout' %}
+
+{% block title %}Dashboard | Email Read Receipts{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/styles/dashboard.css">
+{% endblock %}
+
+{% block body %}
+<div id="profilePictureInfo" class="dialog">
+    <div class="dialogContent">
+        <p>
+            <b>Profile Picture:</b> Your profile picture is a <a href="https://www.gravatar.com/">gravatar</a>. You can
+            change it by changing your gravatar picture.
+        </p>
+    </div>
+</div>
+<div id="addTracker" class="dialog">
+    <div class="dialogContent">
+        <form>
+            <div id="imageURL"></div>
+            <div class="formInput">
+                <i class="material-icons">comment</i>
+                <input type="text" id="description" autocomplete="off">
+                <label for="description">Description</label>
+            </div>
+            <div class="buttons">
+                <button type="button" class="textButton">Cancel</button>
+                &nbsp;&nbsp;
+                <button type="button" id="createNewTracker">Okay</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="overlay"></div>
+<div id="profileHeader">
+    <img src="{{ photo | safe }}&s=512" id="profilePicture" alt="profile picture">
+    <div class="infoColumn">
+        <div><b>Email:</b> {{ email }}</div>
+        <button id="signoutButton">Sign Out</button>
+    </div>
+</div>
+<div id="profileBody">
+    <h2>Tracked Emails</h2>
+    <button class="textButton" id="addTrackerButton">+ Add Tracker</button>
+    <div class="filter">
+        <label for="filter">Filter</label>
+        <input id="filter" type="text">
+    </div>
+    <ul id="trackers">
+    {% if trackers | length == 0 %}
+        <li>
+            No tracked emails yet
+        </li>
+    {% endif %}
+    {% for tracker in trackers %}
+        <li class="tracker{% if tracker.requests | length %} expandable{% endif %}">
+            <section>
+                <div class="trackingID">{{ tracker.tracking_id }}</div>
+                &nbsp;&nbsp;&nbsp;
+                <i class="material-icons">
+                    {% if tracker.requests | length == 0 %}
+                        mail
+                    {% else %}
+                        drafts
+                    {% endif %}
+                </i>
+                &nbsp;&nbsp;&nbsp;
+                <div class="description">
+                {% if tracker.description | length > 0 %}
+                    {{ tracker.description }}
+                {% else %}
+                    No description
+                {% endif %}
+                </div>
+                &nbsp;&nbsp;&nbsp;
+                <div class="time">{{ tracker.created_at }}</div>
+            </section>
+            {% if tracker.requests | length %}
+            <div>
+                <hr>
+                <table>
+                    <thead>
+                        <tr><th>IP Address</th><th>User Agent</th><th>Time</th></tr>
+                    </thead>
+                    <tbody>
+                    {% for request in tracker.requests %}
+                        <tr>
+                            <td>{{ request.ip_address }}</td>
+                            <td>{{ request.user_agent }}</td>
+                            <td class="time">{{ request.time }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script src="/scripts/profile.js"></script>
+{% endblock %}

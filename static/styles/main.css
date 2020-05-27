@@ -15,18 +15,13 @@
 */
 
 @font-face {
-    font-family: "Lora Medium";
-    src: url(/fonts/Lora/Lora-Medium.ttf);
+    font-family: "Rubik";
+    src: url(/fonts/Rubik/Rubik-Regular.ttf);
 }
 
 @font-face {
     font-family: "Fira Sans";
     src: url(/fonts/Fira_Sans/FiraSans-Regular.ttf);
-}
-
-@font-face {
-    font-family: "Iosevka Medium";
-    src: url(/fonts/Iosevka/iosevka-medium.ttf);
 }
 
 /*
@@ -113,6 +108,7 @@ header, footer {
 header a:not(#profileButton) {
     color: var(--bg-primary);
     font-size: 2em;
+    font-family: Rubik;
     text-decoration: none;
 }
 
@@ -147,23 +143,27 @@ button, .button {
     border-radius: 3px;
     color: var(--bg-primary);
     cursor: pointer;
-    font-family: "Iosevka Medium";
+    font-family: "Rubik";
     font-size: 1em;
     padding: 0.5rem 1.5rem;
     text-decoration: none;
 }
 
-button:hover:not(.textButton), .button:hover:not(.textButton) {
+button:not(:disabled):not(.textButton):hover, .button:not(:disabled):not(.textButton):hover {
     box-shadow: 0px 0px 8px 5px rgba(15, 15, 15, 1);
+}
+
+button:disabled, .button:disabled {
+    cursor: default;
+    opacity: 0.75;
 }
 
 .textButton {
     background: transparent;
     color: var(--fg-secondary);
-    padding: 0.5rem;
 }
 
-.textButton:hover {
+.textButton:not(:disabled):hover {
     background-color: #343434;
 }
 
@@ -207,7 +207,7 @@ button:hover:not(.textButton), .button:hover:not(.textButton) {
 }
 
 /*
-    Sign in and sign up forms
+    Forms
 */
 
 #signinForm, #signupForm {
@@ -228,8 +228,8 @@ button:hover:not(.textButton), .button:hover:not(.textButton) {
 
 .formInput {
     position: relative;
-    padding: 2rem 0 1rem 0;
-    margin: 0 1rem 0 1.5rem;
+    padding: 2em 0 1rem 0;
+    margin: 0 1em 0 1.5rem;
 }
 
 .formInput i {
@@ -311,17 +311,17 @@ button:hover:not(.textButton), .button:hover:not(.textButton) {
     display: initial;
     color: var(--error);
     position: absolute;
-    top: 2.8rem;
-    right: 3rem;
+    top: 2.8em;
+    right: 3em;
 }
 
 .formInput.error input ~ .helper-text, .formInput input:invalid ~ .helper-text {
     display: initial;
     color: var(--error);
-    font-size: 0.75rem;
+    font-size: 0.75em;
     position: absolute;
-    top: 5.5rem;
-    left: 2.8rem;
+    top: 5.5em;
+    left: 2.8em;
 }
 
 .formInput.error input:focus, .formInput input:invalid:focus {
@@ -336,7 +336,7 @@ button:hover:not(.textButton), .button:hover:not(.textButton) {
 #signinForm .buttons, #signupForm .buttons {
     display: flex;
     justify-content: flex-end;
-    padding-right: 2.2rem;
+    padding-right: 2.2em;
 }
 
 #signinButton, #signupButton {
@@ -344,7 +344,7 @@ button:hover:not(.textButton), .button:hover:not(.textButton) {
 }
 
 #signinForm p, #signupForm p {
-    margin-left: 2rem;
+    margin-left: 2em;
 }
 
 #signinForm a, #signupForm a {

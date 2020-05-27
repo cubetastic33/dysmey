@@ -5,12 +5,11 @@ extern crate rocket;
 #[macro_use]
 extern crate serde_derive;
 
-use chrono::prelude::*;
 use postgres::{Client, NoTls};
 use rocket::{
     http::Cookies,
     request::{self, Form, FromRequest, Request},
-    response::{self, NamedFile, Responder, Redirect},
+    response::{self, NamedFile, Redirect, Responder},
     Config, Outcome, Response, State,
 };
 use rocket_contrib::{serve::StaticFiles, templates::Template};
@@ -48,16 +47,22 @@ pub struct UserDetails {
     password: String,
 }
 
-struct EmptyImage {}
-
-#[derive(Debug)]
-enum IpAddr {
-    IpAddress(String),
-    Missing,
+#[derive(FromForm)]
+pub struct NewTracker {
+    tracking_id: String,
+    description: String,
 }
 
 #[derive(Debug)]
-enum IpAddrError {}
+pub struct RequestDetails {
+    ip_address: String,
+    user_agent: String,
+}
+
+struct EmptyImage {}
+
+#[derive(Debug)]
+enum RequestDetailsError {}
 
 impl<'r> Responder<'r> for EmptyImage {
     fn respond_to(self, req: &Request) -> response::Result<'r> {
@@ -67,14 +72,23 @@ impl<'r> Responder<'r> for EmptyImage {
     }
 }
 
-impl<'a, 'r> FromRequest<'a, 'r> for IpAddr {
-    type Error = IpAddrError;
+impl<'a, 'r> FromRequest<'a, 'r> for RequestDetails {
+    type Error = RequestDetailsError;
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
-        match request.headers().get("X-Forwarded-For").next() {
-            Some(ip) => Outcome::Success(IpAddr::IpAddress(ip.to_string())),
-            None => Outcome::Success(IpAddr::Missing),
-        }
+        let ip_address = match request.headers().get("X-Forwarded-For").next() {
+            Some(ip) => ip.to_string(),
+            None => String::from("missing"),
+        };
+        Outcome::Success(RequestDetails {
+            ip_address,
+            user_agent: request
+                .headers()
+                .get("User-Agent")
+                .next()
+                .unwrap()
+                .to_string(),
+        })
     }
 }
 
@@ -93,37 +107,24 @@ fn get_signup(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
     Template::render("signup", Context::new(&mut client.lock().unwrap(), cookies))
 }
 
-#[get("/profile")]
-fn get_profile(client: State<Mutex<Client>>, cookies: Cookies) -> Result<Template, Redirect> {
+#[get("/dashboard")]
+fn get_dashboard(client: State<Mutex<Client>>, cookies: Cookies) -> Result<Template, Redirect> {
     let mut context = Context::new(&mut client.lock().unwrap(), cookies);
     if context.email != None {
         context.get_trackers(&mut client.lock().unwrap());
-        Ok(Template::render("profile", context))
+        Ok(Template::render("dashboard", context))
     } else {
         Err(Redirect::to("/signin"))
     }
 }
 
 #[get("/track/<tracking_id>")]
-fn get_track(ip_address: IpAddr, tracking_id: String) -> EmptyImage {
-    if let IpAddr::IpAddress(ip_address) = ip_address {
-        println!(
-            "\nTime: {}, IP Address: {:?}, Tracking ID: {}",
-            Utc::now()
-                .with_timezone(&FixedOffset::east(19800))
-                .format("%Y-%m-%d %H:%M:%S"),
-            ip_address,
-            tracking_id
-        );
-    } else {
-        println!(
-            "\nTime: {}, Unknown IP Address, Tracking ID: {}",
-            Utc::now()
-                .with_timezone(&FixedOffset::east(19800))
-                .format("%Y-%m-%d %H:%M:%S"),
-            tracking_id
-        );
-    }
+fn get_track(
+    client: State<Mutex<Client>>,
+    request_details: RequestDetails,
+    tracking_id: String,
+) -> EmptyImage {
+    save_request(&mut client.lock().unwrap(), tracking_id, request_details);
     EmptyImage {}
 }
 
@@ -131,7 +132,7 @@ fn get_track(ip_address: IpAddr, tracking_id: String) -> EmptyImage {
 fn post_signin(
     client: State<Mutex<Client>>,
     user_details: Form<UserDetails>,
-    cookies: Cookies
+    cookies: Cookies,
 ) -> String {
     signin_user(&mut client.lock().unwrap(), user_details, cookies)
 }
@@ -140,7 +141,7 @@ fn post_signin(
 fn post_signup(
     client: State<Mutex<Client>>,
     user_details: Form<UserDetails>,
-    cookies: Cookies
+    cookies: Cookies,
 ) -> String {
     signup_user(&mut client.lock().unwrap(), user_details, cookies)
 }
@@ -148,6 +149,20 @@ fn post_signup(
 #[post("/signout")]
 fn post_signout(cookies: Cookies) -> String {
     signout_user(cookies)
+}
+
+#[post("/new_tracking_id")]
+fn post_new_tracking_id(client: State<Mutex<Client>>) -> String {
+    new_tracking_id(&mut client.lock().unwrap())
+}
+
+#[post("/register_tracker", data = "<new_tracker>")]
+fn post_register_tracker(
+    client: State<Mutex<Client>>,
+    new_tracker: Form<NewTracker>,
+    cookies: Cookies,
+) -> String {
+    register_tracker(&mut client.lock().unwrap(), new_tracker, cookies)
 }
 
 fn configure() -> Config {
@@ -173,11 +188,13 @@ fn rocket() -> rocket::Rocket {
                 get_index,
                 get_signin,
                 get_signup,
-                get_profile,
+                get_dashboard,
                 get_track,
                 post_signin,
                 post_signup,
                 post_signout,
+                post_new_tracking_id,
+                post_register_tracker,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

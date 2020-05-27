@@ -12,7 +12,7 @@
     <header>
         <a href="/">Dysmey</a>
         {% if email %}
-        <a href="/profile" id="profileButton">
+        <a href="/dashboard" id="profileButton">
             <img src="{{ photo }}&s=30" alt="profile picture">
         </a>
         {% else %}
