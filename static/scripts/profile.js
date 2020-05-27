@@ -134,7 +134,7 @@ $('.overlay, #addTracker .textButton, #deleteConfirmation .textButton').click(fu
 });
 
 $(".tracker.expandable section").click(function(e) {
-    if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1 && $(this).children("description").attr("contenteditable") !== "true") {
+    if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1 && $(this).children(".description").attr("contenteditable") !== "true") {
         $(this).siblings("div").toggle();
     }
 });
