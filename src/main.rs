@@ -53,6 +53,11 @@ pub struct TrackerInfo {
     description: String,
 }
 
+#[derive(FromForm)]
+pub struct TrackerId {
+    tracker_id: String,
+}
+
 #[derive(Debug)]
 pub struct RequestDetails {
     ip_address: String,
@@ -177,10 +182,10 @@ fn post_update_description(
 #[post("/delete_tracker", data = "<tracker_id>")]
 fn post_delete_tracker(
     client: State<Mutex<Client>>,
-    tracker_id: String,
+    tracker_id: Form<TrackerId>,
     cookies: Cookies
 ) -> String {
-    delete_tracker(&mut client.lock().unwrap(), tracker_id, cookies)
+    delete_tracker(&mut client.lock().unwrap(), tracker_id.tracker_id, cookies)
 }
 
 fn configure() -> Config {
