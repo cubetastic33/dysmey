@@ -21,7 +21,19 @@ mod db_operations;
 use db_operations::*;
 
 #[derive(Serialize)]
-struct Tracker {}
+struct TrackerRequest {
+    time: String,
+    ip_address: String,
+    user_agent: String,
+}
+
+#[derive(Serialize)]
+struct Tracker {
+    tracking_id: String,
+    created_at: String,
+    description: String,
+    requests: Vec<TrackerRequest>,
+}
 
 #[derive(Serialize)]
 struct Context {

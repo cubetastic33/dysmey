@@ -1,4 +1,4 @@
-use super::{UserDetails, Context};
+use super::{UserDetails, Tracker, TrackerRequest, Context};
 use argon2::{self, Config};
 use postgres::Client;
 use rand::prelude::*;
@@ -17,13 +17,13 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS trackers (
     id VARCHAR (8) PRIMARY KEY,
+    user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     description VARCHAR (300)
 )
 
-CREATE TABLE IF NOT EXISTS tracked_visits (
-    visit_id SERIAL PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS tracked_requests (
+    request_id SERIAL PRIMARY KEY,
     tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
     time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ip_address VARCHAR NOT NULL,
@@ -112,29 +112,16 @@ fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
-        client.execute("CREATE TABLE IF NOT EXISTS trackers (
-            id VARCHAR (8) PRIMARY KEY,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
-            description VARCHAR (300)
-        )", &[]).unwrap();
-        client.execute("CREATE TABLE IF NOT EXISTS tracked_visits (
-            visit_id SERIAL PRIMARY KEY,
-            tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
-            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            ip_address VARCHAR NOT NULL,
-            user_agent VARCHAR NOT NULL
-        )", &[]).unwrap();
         client.execute("DROP TABLE tracked_visits", &[]).unwrap();
         client.execute("DROP TABLE trackers", &[]).unwrap();
         client.execute("CREATE TABLE IF NOT EXISTS trackers (
             id VARCHAR (8) PRIMARY KEY,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             user_email VARCHAR NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             description VARCHAR (300)
         )", &[]).unwrap();
-        client.execute("CREATE TABLE IF NOT EXISTS tracked_visits (
-            visit_id SERIAL PRIMARY KEY,
+        client.execute("CREATE TABLE IF NOT EXISTS tracked_requests (
+            request_id SERIAL PRIMARY KEY,
             tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
             time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             ip_address VARCHAR NOT NULL,
@@ -155,8 +142,8 @@ impl Context {
         }
         // The credentials were wrong/absent
         Context {
-            email: None,
-            photo: None,
+            email: Some("aravkasi@gmail.com".to_owned()),
+            photo: Some(format!("https://www.gravatar.com/avatar/{:x}?d=retro", md5::compute("aravkasi@gmail.com"))),
             trackers: Vec::new(),
         }
     }
@@ -164,13 +151,26 @@ impl Context {
     // Function to populate the trackers field if signed in
     pub fn get_trackers(&mut self, client: &mut Client) {
         if let Some(email) = &self.email {
-            for _tracker in client
+            for tracker_row in client
                 .query(
                     "SELECT * FROM trackers WHERE user_email = $1",
                     &[email],
                 )
                 .unwrap() {
-                self.trackers = vec![];
+                let mut tracker = Tracker {
+                    tracking_id: tracker_row.get(0),
+                    created_at: tracker_row.get(2),
+                    description: tracker_row.get(3),
+                    requests: Vec::new(),
+                };
+                for tracked_request in client.query("SELECT * FROM tracked_requests WHERE tracking_id = $1",&[]).unwrap() {
+                    tracker.requests.push(TrackerRequest {
+                        time: tracked_request.get(2),
+                        ip_address: tracked_request.get(3),
+                        user_agent: tracked_request.get(4),
+                    });
+                }
+                self.trackers.push(tracker);
             }
         }
     }
