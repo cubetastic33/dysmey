@@ -185,7 +185,7 @@ fn post_delete_tracker(
     tracker_id: Form<TrackerId>,
     cookies: Cookies
 ) -> String {
-    delete_tracker(&mut client.lock().unwrap(), tracker_id.tracker_id, cookies)
+    delete_tracker(&mut client.lock().unwrap(), &tracker_id.tracker_id, cookies)
 }
 
 fn configure() -> Config {

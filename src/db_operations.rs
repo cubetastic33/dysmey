@@ -198,7 +198,7 @@ pub fn update_description(
 }
 
 // Function to delete a tracker
-pub fn delete_tracker(client: &mut Client, tracking_id: String, mut cookies: Cookies) -> String {
+pub fn delete_tracker(client: &mut Client, tracking_id: &str, mut cookies: Cookies) -> String {
     if let Some(email) = cookies.get_private("email") {
         if let Some(hash) = cookies.get_private("hash") {
             // If the email and hash cookies are present
