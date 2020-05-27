@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS trackers (
     id VARCHAR (8) PRIMARY KEY,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    description VARCHAR (600)
+    description VARCHAR (300)
 )
 
 CREATE TABLE IF NOT EXISTS tracked_visits (
@@ -104,17 +104,38 @@ pub fn signout_user(mut cookies: Cookies) -> String {
     String::from("Success")
 }
 
+// Function to verify if the given credentials are correct
+fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
+    let rows = client.query("SELECT FROM users WHERE email = $1 AND password_hash = $2", &[&email, &hash]);
+    !rows.unwrap().is_empty()
+}
+
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        client.execute("DROP TABLE tracked_visits", &[]).unwrap();
+        client.execute("DROP TABLE trackers", &[]).unwrap();
+        client.execute("CREATE TABLE IF NOT EXISTS trackers (
+            id VARCHAR (8) PRIMARY KEY,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            user_email INT NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+            description VARCHAR (300)
+        )", &[]).unwrap();
+        client.execute("CREATE TABLE IF NOT EXISTS tracked_visits (
+            visit_id SERIAL PRIMARY KEY,
+            tracking_id VARCHAR (8) REFERENCES trackers(id) ON DELETE CASCADE,
+            time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            ip_address VARCHAR NOT NULL,
+            user_agent VARCHAR NOT NULL
+        )", &[]).unwrap();
         if let Some(email) = cookies.get_private("email") {
             if let Some(hash) = cookies.get_private("hash") {
                 // If the email and hash cookies are present
-                let rows = client.query("SELECT FROM users WHERE email = $1 AND password_hash = $2", &[&email.value(), &hash.value()]);
-                if !rows.unwrap().is_empty() {
+                if verify_credentials(client, email.value(), hash.value()) {
                     // If the credentials are correct
                     return Context {
                         email: Some(email.value().to_owned()),
                         photo: Some(format!("https://www.gravatar.com/avatar/{:x}?d=retro", md5::compute(email.value().to_lowercase()))),
+                        trackers: Vec::new(),
                     };
                 }
             }
@@ -123,6 +144,21 @@ impl Context {
         Context {
             email: None,
             photo: None,
+            trackers: Vec::new(),
+        }
+    }
+
+    // Function to populate the trackers field if signed in
+    pub fn get_trackers(&mut self, client: &mut Client) {
+        if let Some(email) = &self.email {
+            for _tracker in client
+                .query(
+                    "SELECT * FROM trackers WHERE user_email = $1",
+                    &[email],
+                )
+                .unwrap() {
+                self.trackers = vec![];
+            }
         }
     }
 }

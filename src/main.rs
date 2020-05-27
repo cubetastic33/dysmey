@@ -21,9 +21,13 @@ mod db_operations;
 use db_operations::*;
 
 #[derive(Serialize)]
+struct Tracker {}
+
+#[derive(Serialize)]
 struct Context {
     email: Option<String>,
     photo: Option<String>,
+    trackers: Vec<Tracker>,
 }
 
 #[derive(FromForm)]
@@ -79,8 +83,9 @@ fn get_signup(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
 
 #[get("/profile")]
 fn get_profile(client: State<Mutex<Client>>, cookies: Cookies) -> Result<Template, Redirect> {
-    let context = Context::new(&mut client.lock().unwrap(), cookies);
+    let mut context = Context::new(&mut client.lock().unwrap(), cookies);
     if context.email != None {
+        context.get_trackers(&mut client.lock().unwrap());
         Ok(Template::render("profile", context))
     } else {
         Err(Redirect::to("/signin"))

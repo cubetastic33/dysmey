@@ -16,6 +16,11 @@
 </div>
 <div id="profileBody">
     <h2>Tracked Emails</h2>
+    <button class="textButton" id="addTracker">+ Add Tracker</button>
+    <div class="filter">
+        <label for="filter">Filter:</label>
+        <input id="filter" type="text">
+    </div>
     <p>
         No tracked emails yet
     </p>

@@ -153,8 +153,18 @@ button, .button {
     text-decoration: none;
 }
 
-button:hover, .button:hover {
+button:hover:not(.textButton), .button:hover:not(.textButton) {
     box-shadow: 0px 0px 8px 5px rgba(15, 15, 15, 1);
+}
+
+.textButton {
+    background: transparent;
+    color: var(--fg-secondary);
+    padding: 0.5rem;
+}
+
+.textButton:hover {
+    background-color: #343434;
 }
 
 #toast {

@@ -6,10 +6,12 @@ main {
     background-color: var(--bg-secondary);
     background-image: url(/images/brushed-alum-dark.png);
     background-attachment: fixed;
+    box-shadow: inset 0 0px 4px 3px rgba(15, 15, 15, 0.7);
     display: flex;
     font-size: 1rem;
     min-height: 20vmin;
     padding: 2rem 5vw;
+    z-index: 1;
 }
 
 #profileHeader img {
@@ -39,4 +41,10 @@ main {
 
 #profileBody {
     padding: 2rem 5vw 1rem 5vw;
+    min-height: calc(100vh - 20vmin - 14.9rem);
+}
+
+#addTracker {
+    color: #FFFFFF;
+    margin: 1rem 0;
 }
