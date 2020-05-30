@@ -233,22 +233,33 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
             // If the email and hash cookies are present
             if verify_credentials(client, email.value(), hash.value()) {
                 // If the credentials are correct
-                if client
-                    .query(
-                        "SELECT * FROM tracked_requests WHERE request_id = $1 AND user_email = $2",
+                if let Some(tracking_id) = client
+                    .query_opt(
+                        "SELECT tracking_id FROM tracked_requests WHERE request_id = $1 AND user_email = $2",
                         &[&request_id, &email.value()],
                     )
-                    .unwrap()
-                    .is_empty() {
-                    return format!("Request ID {} not found under user", request_id);
+                    .unwrap() {
+                    // If the request exists, make sure the tracker belongs to the logged in user
+                    if !client
+                        .query(
+                            "SELECT * FROM trackers WHERE id = $1 AND user_email = $2",
+                            &[&tracking_id.get::<_, String>(0), &email.value()],
+                        )
+                        .unwrap()
+                        .is_empty() {
+                        // It does belong to the logged in user
+                        // Delete the request
+                        client
+                            .execute(
+                                "DELETE FROM tracked_requests WHERE request_id = $1",
+                                &[&request_id],
+                                )
+                            .unwrap();
+                        return String::from("Success");
+                    }
                 }
-                client
-                    .execute(
-                        "DELETE FROM tracked_requests WHERE request_id = $1",
-                        &[&request_id],
-                    )
-                    .unwrap();
-                return String::from("Success");
+                // The request either didn't exist or belong to the logged in user
+                return format!("Request ID {} not found under user", request_id);
             }
         }
     }
