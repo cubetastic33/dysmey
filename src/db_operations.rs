@@ -227,7 +227,7 @@ pub fn delete_tracker(client: &mut Client, tracking_id: &str, mut cookies: Cooki
 }
 
 // Function to delete a tracker
-pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookies) -> String {
+pub fn delete_request(client: &mut Client, request_id: i32, mut cookies: Cookies) -> String {
     if let Some(email) = cookies.get_private("email") {
         if let Some(hash) = cookies.get_private("hash") {
             // If the email and hash cookies are present
@@ -237,7 +237,7 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
                 if let Some(tracking_id) = client
                     .query_opt(
                         "SELECT tracking_id FROM tracked_requests WHERE request_id = $1",
-                        &[&request_id.parse::<i32>().unwrap()],
+                        &[&request_id],
                     )
                     .unwrap() {
                     // The request exists; make sure the tracker belongs to the logged in user

@@ -200,7 +200,7 @@ fn post_delete_request(
     request_id: Form<DeleteId>,
     cookies: Cookies
 ) -> String {
-    delete_request(&mut client.lock().unwrap(), &request_id.id, cookies)
+    delete_request(&mut client.lock().unwrap(), request_id.id.parse::<i32>().unwrap(), cookies)
 }
 
 fn configure() -> Config {
