@@ -255,6 +255,7 @@ button:disabled, .button:disabled {
 }
 
 .formInput i {
+    font-size: 1.5em;
     position: absolute;
     top: 2.8rem;
 }
@@ -312,7 +313,6 @@ button:disabled, .button:disabled {
     outline: none;
     outline-offset: 0;
     padding: calc(1rem - 1px);
-
 }
 
 .formInput input:focus + label, .formInput select:focus + label {

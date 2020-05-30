@@ -136,17 +136,17 @@ $('.overlay, #addTracker .textButton, #deleteConfirmation .textButton').click(fu
 
 $(".tracker.expandable section").click(function(e) {
     if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1 && $(this).children(".description").attr("contenteditable") !== "true") {
-        $(this).siblings("div").toggle();
+        $(this).siblings(".requests").toggle();
     }
 });
 
 $(".editTracker").click(function() {
-    if (!$(this).hasClass("disabled") && $(this).siblings(".description").attr("contenteditable") === "true") {
+    if (!$(this).hasClass("disabled") && $(this).parent().siblings(".description").attr("contenteditable") === "true") {
         showToast("Please wait...", 3000);
         // Update description
         $.post("/update_description", {
             tracking_id: $(this).siblings(".trackingID").text(),
-            description: $(this).siblings(".description").text().trim(),
+            description: $(this).parent().siblings(".description").text().trim(),
         }).done(function(result) {
             console.log(result);
             if (result === "Success") {
@@ -157,7 +157,7 @@ $(".editTracker").click(function() {
         });
     } else if (!$(this).hasClass("disabled")) {
         $(".editTracker, .deleteTracker").addClass("disabled");
-        $(this).siblings(".description").attr("contenteditable", true);
+        $(this).parent().siblings(".description").attr("contenteditable", true);
         $(this).removeClass("disabled");
         $(this).siblings(".deleteTracker").removeClass("disabled");
         $(this).text("check");
@@ -166,11 +166,11 @@ $(".editTracker").click(function() {
 });
 
 $(".deleteTracker").click(function() {
-    if (!$(this).hasClass("disabled") && $(this).siblings(".description").attr("contenteditable") === "true") {
+    if (!$(this).hasClass("disabled") && $(this).parent().siblings(".description").attr("contenteditable") === "true") {
         // Undo contenteditable
         $(".disabled").removeClass("disabled");
-        $(this).siblings(".description").attr("contenteditable", false);
-        $(this).siblings(".description").text($(this).siblings(".description").attr("data-description"));
+        $(this).parent().siblings(".description").attr("contenteditable", false);
+        $(this).parent().siblings(".description").text($(this).parent().siblings(".description").attr("data-description"));
         $(this).text("delete");
         $(this).siblings(".editTracker").text("edit");
     } else if (!$(this).hasClass("disabled")) {

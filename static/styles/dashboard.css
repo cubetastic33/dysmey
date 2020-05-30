@@ -98,7 +98,6 @@ a {
     background-color: #313131;
     border-radius: 3px;
     padding: 1em;
-    font-size: min(3vw, 1rem);
     margin: 0.75em 0;
 }
 
@@ -115,7 +114,7 @@ a {
     box-shadow: 0px 0px 4px 4px rgba(25, 25, 25, .9);
 }
 
-.tracker.expandable > div {
+.requests {
     display: none;
 }
 
@@ -128,7 +127,7 @@ a {
     margin: 1rem 0;
 }
 
-.editTracker:not(.disabled):hover, .deleteTracker:not(.disabled):hover {
+.editTracker, .deleteTracker {
     cursor: pointer;
 }
 
@@ -151,20 +150,25 @@ a {
     transform: translateY(.05em);
 }
 
+.spacer {
+    flex-grow: 1;
+}
+
 .description {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex-grow: 1;
     text-align: center;
+    width: calc(100% - 22em);
+    margin: -1.2em 0 0 8em;
 }
 
 .description[contenteditable="true"] {
     border: 1pt solid #AFAFAF;
     border-radius: 3px;
     cursor: text;
-    margin: -.5em;
-    padding: .5em;
+    margin: -1.4em 0 0 7.8em;
+    padding: .2em;
 }
 
 .description[contenteditable="true"]:focus {
@@ -248,4 +252,20 @@ form .buttons {
     height: 100%;
     width: 100%;
     z-index: 10;
+}
+
+/*
+    Media Queries
+*/
+
+@media only screen and (max-width: 660px) {
+    .spacer {
+        flex-grow: unset;
+        width: 1em;
+    }
+
+    .description {
+        width: 100%;
+        margin: 1em 0 0 0;
+    }
 }

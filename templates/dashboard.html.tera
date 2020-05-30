@@ -80,23 +80,22 @@
                         drafts
                     {% endif %}
                 </i>
-                &nbsp;&nbsp;&nbsp;
-                <div class="description" data-description="{% if tracker.description | length > 0 %}{{ tracker.description }}{% else %}No description{% endif %}">
-                {% if tracker.description | length > 0 %}
-                    {{ tracker.description }}
-                {% else %}
-                    No description
-                {% endif %}
-                </div>
-                &nbsp;&nbsp;&nbsp;
+                <div class="spacer"></div>
                 <i class="material-icons editTracker">edit</i>
                 &nbsp;&nbsp;&nbsp;
                 <i class="material-icons deleteTracker">delete</i>
                 &nbsp;&nbsp;&nbsp;
                 <div class="time">{{ tracker.created_at }}</div>
             </section>
+            <div class="description" data-description="{% if tracker.description | length > 0 %}{{ tracker.description }}{% else %}No description{% endif %}">
+            {% if tracker.description | length > 0 %}
+                {{ tracker.description }}
+            {% else %}
+                No description
+            {% endif %}
+            </div>
             {% if tracker.requests | length %}
-            <div>
+            <div class="requests">
                 <hr>
                 <table>
                     <thead>
