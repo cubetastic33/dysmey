@@ -21,7 +21,7 @@ use db_operations::*;
 
 #[derive(Serialize)]
 struct TrackerRequest {
-    id: u32,
+    id: i32,
     time: i64,
     ip_address: String,
     user_agent: String,
