@@ -127,7 +127,7 @@ a {
     margin: 1rem 0;
 }
 
-.editTracker, .deleteTracker {
+.editTracker, .deleteTracker, .deleteRequest {
     cursor: pointer;
 }
 
@@ -140,7 +140,7 @@ a {
     color: #FFFF44;
 }
 
-.deleteTracker:not(.disabled):hover {
+.deleteTracker:not(.disabled):hover, .deleteRequest:hover {
     color: var(--error);
 }
 
@@ -155,6 +155,7 @@ a {
 }
 
 .description {
+    cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;

@@ -134,8 +134,8 @@ $('.overlay, #addTracker .textButton, #deleteConfirmation .textButton').click(fu
     });
 });
 
-$(".tracker.expandable section").click(function(e) {
-    if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1 && $(this).children(".description").attr("contenteditable") !== "true") {
+$(".tracker.expandable section, .tracker.expandable .description").click(function(e) {
+    if (["material-icons editTracker", "material-icons deleteTracker"].indexOf(e.target.className) === -1 && $(this).parent().children(".description").attr("contenteditable") !== "true") {
         $(this).siblings(".requests").toggle();
     }
 });
@@ -176,14 +176,27 @@ $(".deleteTracker").click(function() {
     } else if (!$(this).hasClass("disabled")) {
         $(".overlay").show();
         $("#deleteConfirmation").show("slow");
-        $("#confirmDelete").attr("data-tracking-id", $(this).siblings(".trackingID").text());
+        $("#confirmDelete").attr("data-delete-type", "tracker");
+        $("#confirmDelete").attr("data-delete-id", $(this).siblings(".trackingID").text());
     }
+});
+
+$(".deleteRequest").click(function() {
+    $(".overlay").show();
+    $("#deleteConfirmation").show("slow");
+    $("#confirmDelete").attr("data-delete-type", "request");
+    $("#confirmDelete").attr("data-delete-id", $(this).attr("data-request-id"));
 });
 
 $("#confirmDelete").click(function() {
     showToast("Please wait...", 3000);
-    $.post("/delete_tracker", {
-        tracking_id: $(this).attr("data-tracking-id"),
+    if ($(this).attr("data-delete-type") === "tracker") {
+        var url = "/delete_tracker";
+    } else {
+        var url = "/delete_request";
+    }
+    $.post(url, {
+        id: $(this).attr("data-delete-id"),
     }).done(function(result) {
         console.log(result);
         if (result == "Success") {

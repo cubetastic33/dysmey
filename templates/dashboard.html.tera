@@ -99,13 +99,14 @@
                 <hr>
                 <table>
                     <thead>
-                        <tr><th>IP Address</th><th>User Agent</th><th>Time</th></tr>
+                        <tr><th>IP Address</th><th>User Agent</th><th></th><th>Time</th></tr>
                     </thead>
                     <tbody>
                     {% for request in tracker.requests %}
                         <tr>
                             <td>{{ request.ip_address }}</td>
                             <td>{{ request.user_agent }}</td>
+                            <td><i class="material-icons deleteRequest" data-request-id="{{ request.id }}">delete</i></td>
                             <td class="time">{{ request.time }}</td>
                         </tr>
                     {% endfor %}

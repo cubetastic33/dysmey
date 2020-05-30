@@ -21,6 +21,7 @@ use db_operations::*;
 
 #[derive(Serialize)]
 struct TrackerRequest {
+    id: u32,
     time: i64,
     ip_address: String,
     user_agent: String,
@@ -54,8 +55,8 @@ pub struct TrackerInfo {
 }
 
 #[derive(FromForm)]
-pub struct TrackingId {
-    tracking_id: String,
+pub struct DeleteId {
+    id: String,
 }
 
 #[derive(Debug)]
@@ -187,10 +188,19 @@ fn post_update_description(
 #[post("/delete_tracker", data = "<tracking_id>")]
 fn post_delete_tracker(
     client: State<Mutex<Client>>,
-    tracking_id: Form<TrackingId>,
+    tracking_id: Form<DeleteId>,
     cookies: Cookies
 ) -> String {
-    delete_tracker(&mut client.lock().unwrap(), &tracking_id.tracking_id, cookies)
+    delete_tracker(&mut client.lock().unwrap(), &tracking_id.id, cookies)
+}
+
+#[post("/delete_request", data = "<request_id>")]
+fn post_delete_request(
+    client: State<Mutex<Client>>,
+    request_id: Form<DeleteId>,
+    cookies: Cookies
+) -> String {
+    delete_request(&mut client.lock().unwrap(), &request_id.id, cookies)
 }
 
 fn configure() -> Config {
@@ -226,6 +236,7 @@ fn rocket() -> rocket::Rocket {
                 post_register_tracker,
                 post_update_description,
                 post_delete_tracker,
+                post_delete_request,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

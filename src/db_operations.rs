@@ -226,6 +226,35 @@ pub fn delete_tracker(client: &mut Client, tracking_id: &str, mut cookies: Cooki
     String::from("Not signed in")
 }
 
+// Function to delete a tracker
+pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookies) -> String {
+    if let Some(email) = cookies.get_private("email") {
+        if let Some(hash) = cookies.get_private("hash") {
+            // If the email and hash cookies are present
+            if verify_credentials(client, email.value(), hash.value()) {
+                // If the credentials are correct
+                if client
+                    .query(
+                        "SELECT * FROM tracked_requests WHERE id = $1 AND user_email = $2",
+                        &[&request_id, &email.value()],
+                    )
+                    .unwrap()
+                    .is_empty() {
+                    return format!("Request ID {} not found under user", request_id);
+                }
+                client
+                    .execute(
+                        "DELETE FROM tracked_requests WHERE id = $1",
+                        &[&request_id],
+                    )
+                    .unwrap();
+                return String::from("Success");
+            }
+        }
+    }
+    String::from("Not signed in")
+}
+
 // Function to save a request if it's being tracked
 pub fn save_request(client: &mut Client, tracking_id: String, request_details: RequestDetails) {
     if let Some(_) = client
@@ -294,6 +323,7 @@ impl Context {
                     .unwrap() {
                     let time: NaiveDateTime = tracked_request.get(2);
                     tracker.requests.push(TrackerRequest {
+                        id: tracked_request.get(0),
                         time: time.timestamp(),
                         ip_address: tracked_request.get(3),
                         user_agent: tracked_request.get(4),

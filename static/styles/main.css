@@ -95,7 +95,7 @@ html {
 body {
     background-color: var(--bg-primary);
     color: #FFFFFF;
-    font-family: "Fira Sans";
+    font-family: "Fira Sans", sans-serif;
     font-size: min(4vw, 1rem);
     margin: 0;
 }
