@@ -133,6 +133,11 @@ fn get_track(
     EmptyImage {}
 }
 
+#[get("/admin")]
+fn get_admin(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
+    Template::render("admin", Context::new(&mut client.lock().unwrap(), cookies))
+}
+
 #[post("/signin", data = "<user_details>")]
 fn post_signin(
     client: State<Mutex<Client>>,
@@ -213,6 +218,7 @@ fn rocket() -> rocket::Rocket {
                 get_signup,
                 get_dashboard,
                 get_track,
+                get_admin,
                 post_signin,
                 post_signup,
                 post_signout,

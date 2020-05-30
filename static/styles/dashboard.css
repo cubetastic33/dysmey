@@ -24,20 +24,20 @@ a {
     border-radius: 100%;
     box-shadow: 0px 0px 4px 3px rgba(15, 15, 15, 0.7);
     cursor: pointer;
-    height: 20vmin;
-    width: 20vmin;
+    height: min(20vmin, 200px);
+    width: min(20vmin, 200px);
 }
 
 #profileHeader .infoColumn {
     display: flex;
     flex-direction: column;
-    font-size: 1.3rem;
+    font-size: min(4vw, 1.3rem);
     padding-left: 5vw;
     justify-content: space-evenly;
 }
 
 #profileHeader .infoColumn button {
-    font-size: 1.1rem;
+    font-size: min(3.5vw, 1.1rem);
     box-shadow: 0px 0px 3px 3px rgba(15, 15, 15, 1);
 }
 
@@ -97,8 +97,9 @@ a {
 .tracker {
     background-color: #313131;
     border-radius: 3px;
-    padding: 1rem;
-    margin: 0.75rem 0;
+    padding: 1em;
+    font-size: min(3vw, 1rem);
+    margin: 0.75em 0;
 }
 
 .tracker.expandable section {
@@ -119,7 +120,8 @@ a {
 }
 
 .tracker i {
-    margin-top: -3px;
+    font-size: 1.3em;
+    margin-top: -1px;
 }
 
 .tracker hr {
@@ -145,8 +147,8 @@ a {
 
 .trackingID, .time {
     font-family: monospace;
-    font-size: .9rem;
-    transform: translateY(.05rem);
+    font-size: .9em;
+    transform: translateY(.05em);
 }
 
 .description {
@@ -161,8 +163,8 @@ a {
     border: 1pt solid #AFAFAF;
     border-radius: 3px;
     cursor: text;
-    margin: -.5rem;
-    padding: .5rem;
+    margin: -.5em;
+    padding: .5em;
 }
 
 .description[contenteditable="true"]:focus {
@@ -179,11 +181,11 @@ a {
 
 table {
     width: 100%;
-    border-spacing: .5rem;
+    border-spacing: .5em;
 }
 
 td {
-    padding-top: .5rem;
+    padding-top: .5em;
 }
 
 td:nth-child(2) {

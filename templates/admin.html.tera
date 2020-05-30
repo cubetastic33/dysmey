@@ -1,0 +1,11 @@
+{% extends 'layout' %}
+
+{% block title %}Dashboard | Email Read Receipts{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/styles/dashboard.css">
+{% endblock %}
+
+{% block body %}
+<h1>Admin</h1>
+{% endblock %}

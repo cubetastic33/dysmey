@@ -96,18 +96,19 @@ body {
     background-color: var(--bg-primary);
     color: #FFFFFF;
     font-family: "Fira Sans";
+    font-size: min(4vw, 1rem);
     margin: 0;
 }
 
 header, footer {
     background-color: var(--fg-primary);
     color: var(--bg-primary);
-    padding: 1rem;
+    padding: 1em;
 }
 
 header a:not(#profileButton) {
     color: var(--bg-primary);
-    font-size: 2em;
+    font-size: min(7vw, 2rem);
     font-family: Rubik;
     text-decoration: none;
 }
@@ -117,12 +118,16 @@ header a:not(#profileButton) {
     text-decoration: none;
     border-radius: 100%;
     position: absolute;
-    right: 1.25rem;
+    right: 1.25em;
 }
 
 #profileButton i, #profileButton img {
     border-radius: 100%;
-    padding: 0.25rem 0.25rem 0 0.25rem;
+    padding: 0.25em 0.25em 0 0.25em;
+}
+
+#profileButton img {
+    max-width: 8vw;
 }
 
 #profileButton:hover {
@@ -131,6 +136,18 @@ header a:not(#profileButton) {
 
 h1, h2, h3 {
     margin: 0;
+}
+
+h1 {
+    font-size: 1.75em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3 {
+    font-size: 1.2em;
 }
 
 main {
@@ -145,7 +162,7 @@ button, .button {
     cursor: pointer;
     font-family: "Rubik";
     font-size: 1em;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5em 1.5em;
     text-decoration: none;
 }
 
@@ -233,8 +250,8 @@ button:disabled, .button:disabled {
 
 .formInput {
     position: relative;
-    padding: 2em 0 1rem 0;
-    margin: 0 1em 0 1.5rem;
+    padding: 2rem 0 1rem 0;
+    margin: 0 1em 0 1.5em;
 }
 
 .formInput i {
