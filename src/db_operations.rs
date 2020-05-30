@@ -232,14 +232,15 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
         if let Some(hash) = cookies.get_private("hash") {
             // If the email and hash cookies are present
             if verify_credentials(client, email.value(), hash.value()) {
-                // If the credentials are correct
+                // The credentials are correct
+                // Check if the request exists, and get the tracker ID if it does
                 if let Some(tracking_id) = client
                     .query_opt(
-                        "SELECT tracking_id FROM tracked_requests WHERE request_id = $1 AND user_email = $2",
-                        &[&request_id, &email.value()],
+                        "SELECT tracking_id FROM tracked_requests WHERE request_id = $1",
+                        &[&request_id],
                     )
                     .unwrap() {
-                    // If the request exists, make sure the tracker belongs to the logged in user
+                    // The request exists; make sure the tracker belongs to the logged in user
                     if !client
                         .query(
                             "SELECT * FROM trackers WHERE id = $1 AND user_email = $2",
