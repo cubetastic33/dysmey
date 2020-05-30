@@ -237,7 +237,7 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
                 if let Some(tracking_id) = client
                     .query_opt(
                         "SELECT tracking_id FROM tracked_requests WHERE request_id = $1",
-                        &[&request_id],
+                        &[&request_id.parse::<i32>().unwrap()],
                     )
                     .unwrap() {
                     // The request exists; make sure the tracker belongs to the logged in user
