@@ -235,7 +235,7 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
                 // If the credentials are correct
                 if client
                     .query(
-                        "SELECT * FROM tracked_requests WHERE id = $1 AND user_email = $2",
+                        "SELECT * FROM tracked_requests WHERE request_id = $1 AND user_email = $2",
                         &[&request_id, &email.value()],
                     )
                     .unwrap()
@@ -244,7 +244,7 @@ pub fn delete_request(client: &mut Client, request_id: &str, mut cookies: Cookie
                 }
                 client
                     .execute(
-                        "DELETE FROM tracked_requests WHERE id = $1",
+                        "DELETE FROM tracked_requests WHERE request_id = $1",
                         &[&request_id],
                     )
                     .unwrap();

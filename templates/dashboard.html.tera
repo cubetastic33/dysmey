@@ -37,7 +37,7 @@
 <div id="deleteConfirmation" class="dialog">
     <div class="dialogContent">
         <p>
-            Are you sure you want to delete the tracker? You will not be able to undo this.
+            Are you sure you want to delete it? You will not be able to undo this.
         </p>
         <br>
         <div class="buttons">

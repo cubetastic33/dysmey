@@ -190,6 +190,7 @@ $(".deleteRequest").click(function() {
 
 $("#confirmDelete").click(function() {
     showToast("Please wait...", 3000);
+    $(this).parent().children("button").prop("disabled", true);
     if ($(this).attr("data-delete-type") === "tracker") {
         var url = "/delete_tracker";
     } else {
@@ -202,6 +203,7 @@ $("#confirmDelete").click(function() {
         if (result == "Success") {
             location.reload();
         } else {
+            $(this).parent().children("button").prop("disabled", false);
             showToast(result, 10000);
         }
     });
