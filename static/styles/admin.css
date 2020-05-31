@@ -12,6 +12,11 @@ main h1 {
     padding: 2rem;
 }
 
+#signoutButton {
+    display: block;
+    margin: 1rem auto;
+}
+
 main > ul {
     list-style-type: none;
     padding: 0;

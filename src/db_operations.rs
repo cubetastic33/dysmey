@@ -102,6 +102,12 @@ pub fn signout_user(mut cookies: Cookies) -> String {
     String::from("Success")
 }
 
+// Function to sign the admin out
+pub fn signout_admin(mut cookies: Cookies) -> String {
+    cookies.remove_private(Cookie::named("admin_password"));
+    String::from("Success")
+}
+
 // Function to verify if the given credentials are correct
 fn verify_credentials(client: &mut Client, email: &str, hash: &str) -> bool {
     let rows = client.query(

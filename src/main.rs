@@ -237,6 +237,11 @@ fn post_admin_signin(password: Form<SingleField>, mut cookies: Cookies) -> Strin
     }
 }
 
+#[post("/signout_admin")]
+fn post_signout_admin(cookies: Cookies) -> String {
+    signout_admin(cookies)
+}
+
 fn configure() -> Config {
     // Configure Rocket to serve on the port requested by Heroku.
     let mut config = Config::active().expect("could not load configuration");
@@ -272,6 +277,7 @@ fn rocket() -> rocket::Rocket {
                 post_delete_tracker,
                 post_delete_request,
                 post_admin_signin,
+                post_signout_admin,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

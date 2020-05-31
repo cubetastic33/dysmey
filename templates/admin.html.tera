@@ -8,6 +8,7 @@
 
 {% block body %}
 <h1>Admin</h1>
+<button id="signoutButton">Sign Out</button>
 <ul>
     <li><b>Number of users:</b> {{ users | length }}</li>
     <li><b>Trackers today:</b> <span id="trackersToday"></span></li>

@@ -62,3 +62,17 @@ if (typeof trackers !== "undefined") {
 
     $("#requestsToday").text(requests_today);
 }
+
+$("#signoutButton").click(function() {
+    showToast("Please wait...");
+    $.ajax({
+        type: "POST",
+        url: "/signout_admin",
+        success: function(result) {
+            console.log(result);
+            if (result == "Success") {
+                window.location.href = "/";
+            }
+        }
+    });
+});
