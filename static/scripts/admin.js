@@ -17,7 +17,7 @@ $('.formInput input').each(function() {
         if ($(this).val() === '') {
             $('#'+this.id+' + label').animate({
                 'fontSize': '1rem',
-                'top': '2.9em',
+                'top': '2.9rem',
                 'padding': 0
             }, 80);
         }

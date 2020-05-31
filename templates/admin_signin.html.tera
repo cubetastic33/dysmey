@@ -19,7 +19,8 @@
     }
 
     .formInput label {
-        top: 2.9em;
+        font-size: 1rem;
+        top: 2.9rem;
     }
 
     .formInput input:focus + label {
