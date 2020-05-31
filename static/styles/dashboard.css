@@ -101,7 +101,7 @@ a {
     margin: 0.75em 0;
 }
 
-.tracker.expandable section {
+.tracker.expandable section, .tracker.expandable .description {
     cursor: pointer;
 }
 
@@ -155,7 +155,6 @@ a {
 }
 
 .description {
-    cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
