@@ -155,11 +155,11 @@ fn get_track(
 
 #[get("/admin")]
 fn get_admin(client: State<Mutex<Client>>, mut cookies: Cookies) -> Template {
-    if let Some(password) = cookies.get_private("admin_password") {
+    /*if let Some(password) = cookies.get_private("admin_password") {
         if password.value() == env::var("ADMIN_PASSWORD").unwrap() {
             return Template::render("admin", AdminDetails::new(&mut client.lock().unwrap(), cookies));
         }
-    }
+    }*/
     Template::render("admin_signin", AdminDetails::default())
 }
 

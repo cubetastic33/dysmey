@@ -17,7 +17,7 @@ $('.formInput input').each(function() {
         if ($(this).val() === '') {
             $('#'+this.id+' + label').animate({
                 'fontSize': '1rem',
-                'top': '3rem',
+                'top': '2.9em',
                 'padding': 0
             }, 80);
         }
@@ -39,24 +39,26 @@ $("#signinForm").submit(e => {
     });
 });
 
-let today = new Date().setHours(0, 0, 0, 0);
-let trackers_today = 0;
-let requests_today = 0;
+if (typeof trackers !== "undefined") {
+    let today = new Date().setHours(0, 0, 0, 0);
+    let trackers_today = 0;
+    let requests_today = 0;
 
-for (let i = 0; i < trackers.length; i++) {
-    let date = new Date(trackers[i] * 1000).setHours(0, 0, 0, 0);
-    if (date === today) {
-        trackers_today++;
+    for (let i = 0; i < trackers.length; i++) {
+        let date = new Date(trackers[i] * 1000).setHours(0, 0, 0, 0);
+        if (date === today) {
+            trackers_today++;
+        }
     }
-}
 
-$("#trackersToday").text(trackers_today);
+    $("#trackersToday").text(trackers_today);
 
-for (let i = 0; i < requests.length; i++) {
-    let date = new Date(requests[i] * 1000).setHours(0, 0, 0, 0);
-    if (date === today) {
-        requests_today++;
+    for (let i = 0; i < requests.length; i++) {
+        let date = new Date(requests[i] * 1000).setHours(0, 0, 0, 0);
+        if (date === today) {
+            requests_today++;
+        }
     }
-}
 
-$("#requestsToday").text(requests_today);
+    $("#requestsToday").text(requests_today);
+}

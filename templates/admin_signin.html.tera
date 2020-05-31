@@ -18,6 +18,10 @@
         caret-color: var(--fg-secondary);
     }
 
+    .formInput label {
+        top: 2.9em;
+    }
+
     .formInput input:focus + label {
         color: var(--fg-secondary);
     }
