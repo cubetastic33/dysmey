@@ -1,0 +1,42 @@
+main {
+    padding: 0;
+}
+
+main h1 {
+    background-color: var(--bg-secondary);
+    background-image: url(/images/brushed-alum-dark.png);
+    background-attachment: fixed;
+    box-shadow: inset 0 0px 4px 3px rgba(15, 15, 15, 0.7);
+    font-size: min(7vw, 2rem);
+    text-align: center;
+    padding: 2rem;
+}
+
+main > ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 1em 5vw;
+}
+
+main > ul li {
+    font-size: min(5vw, 1.1rem);
+}
+
+h2 {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    width: 90vw;
+    margin: 5vh 5vw;
+}
+
+th, td {
+    border: 2px solid #6A6A6A;
+    padding: .5em;
+}
+
+td:not(:first-child) {
+    width: 5em;
+}

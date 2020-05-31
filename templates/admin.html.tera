@@ -3,9 +3,43 @@
 {% block title %}Dashboard | Email Read Receipts{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" href="/styles/dashboard.css">
+<link rel="stylesheet" href="/styles/admin.css">
 {% endblock %}
 
 {% block body %}
 <h1>Admin</h1>
+<ul>
+    <li><b>Number of users:</b> {{ users | length }}</li>
+    <li><b>Trackers today:</b> <span id="trackersToday"></span></li>
+    <li><b>Requests today:</b> <span id="requestsToday"></span></li>
+    <li><b>Total trackers:</b> {{ trackers | length }}</li>
+    <li><b>Total requests:</b> {{ requests | length }}</li>
+</ul>
+<h2>Users</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Email Address</th>
+            <th>Trackers</th>
+            <th>Requests</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+        <tr>
+            <td>{{ user[0] }}</td>
+            <td>{{ user[1] }}</td>
+            <td>{{ user[2] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    const trackers = [{{ trackers | join(sep=", ") }}];
+    const requests = [{{ requests | join(sep=", ") }}];
+</script>
+<script src="/scripts/admin.js"></script>
 {% endblock %}

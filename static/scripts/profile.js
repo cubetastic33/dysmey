@@ -197,7 +197,7 @@ $("#confirmDelete").click(function() {
         var url = "/delete_request";
     }
     $.post(url, {
-        id: $(this).attr("data-delete-id"),
+        value: $(this).attr("data-delete-id"),
     }).done(function(result) {
         console.log(result);
         if (result == "Success") {

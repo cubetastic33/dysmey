@@ -7,7 +7,7 @@ extern crate serde_derive;
 
 use postgres::{Client, NoTls};
 use rocket::{
-    http::Cookies,
+    http::{Cookie, Cookies},
     request::{self, Form, FromRequest, Request},
     response::{self, NamedFile, Redirect, Responder},
     Config, Outcome, Response, State,
@@ -42,6 +42,14 @@ struct Context {
     trackers: Vec<Tracker>,
 }
 
+#[derive(Serialize)]
+struct AdminDetails {
+    photo: Option<String>,
+    users: Vec<(String, usize, usize)>,
+    trackers: Vec<i64>,
+    requests: Vec<i64>,
+}
+
 #[derive(FromForm)]
 pub struct UserDetails {
     email: String,
@@ -55,8 +63,8 @@ pub struct TrackerInfo {
 }
 
 #[derive(FromForm)]
-pub struct DeleteId {
-    id: String,
+pub struct SingleField {
+    value: String,
 }
 
 #[derive(Debug)]
@@ -69,6 +77,17 @@ struct EmptyImage {}
 
 #[derive(Debug)]
 pub enum RequestDetailsError {}
+
+impl Default for AdminDetails {
+    fn default() -> Self {
+        AdminDetails {
+            photo: None,
+            users: Vec::new(),
+            trackers: Vec::new(),
+            requests: Vec::new(),
+        }
+    }
+}
 
 impl<'r> Responder<'r> for EmptyImage {
     fn respond_to(self, req: &Request) -> response::Result<'r> {
@@ -135,8 +154,13 @@ fn get_track(
 }
 
 #[get("/admin")]
-fn get_admin(client: State<Mutex<Client>>, cookies: Cookies) -> Template {
-    Template::render("admin", Context::new(&mut client.lock().unwrap(), cookies))
+fn get_admin(client: State<Mutex<Client>>, mut cookies: Cookies) -> Template {
+    if let Some(password) = cookies.get_private("admin_password") {
+        if password.value() == env::var("ADMIN_PASSWORD").unwrap() {
+            return Template::render("admin", AdminDetails::new(&mut client.lock().unwrap(), cookies));
+        }
+    }
+    Template::render("admin_signin", AdminDetails::default())
 }
 
 #[post("/signin", data = "<user_details>")]
@@ -188,19 +212,29 @@ fn post_update_description(
 #[post("/delete_tracker", data = "<tracking_id>")]
 fn post_delete_tracker(
     client: State<Mutex<Client>>,
-    tracking_id: Form<DeleteId>,
+    tracking_id: Form<SingleField>,
     cookies: Cookies
 ) -> String {
-    delete_tracker(&mut client.lock().unwrap(), &tracking_id.id, cookies)
+    delete_tracker(&mut client.lock().unwrap(), &tracking_id.value, cookies)
 }
 
 #[post("/delete_request", data = "<request_id>")]
 fn post_delete_request(
     client: State<Mutex<Client>>,
-    request_id: Form<DeleteId>,
+    request_id: Form<SingleField>,
     cookies: Cookies
 ) -> String {
-    delete_request(&mut client.lock().unwrap(), request_id.id.parse::<i32>().unwrap(), cookies)
+    delete_request(&mut client.lock().unwrap(), request_id.value.parse::<i32>().unwrap(), cookies)
+}
+
+#[post("/admin_signin", data = "<password>")]
+fn post_admin_signin(password: Form<SingleField>, mut cookies: Cookies) -> String {
+    if password.value == env::var("ADMIN_PASSWORD").unwrap() {
+        cookies.add_private(Cookie::new("admin_password", password.value.clone()));
+        String::from("Success")
+    } else {
+        String::from("Incorrect password")
+    }
 }
 
 fn configure() -> Config {
@@ -237,6 +271,7 @@ fn rocket() -> rocket::Rocket {
                 post_update_description,
                 post_delete_tracker,
                 post_delete_request,
+                post_admin_signin,
             ],
         )
         .mount("/styles", StaticFiles::from("static/styles"))

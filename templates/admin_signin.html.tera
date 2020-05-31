@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dysmey</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<style>
+    form {
+        margin-top: 45vh !important;
+        transform: translateY(-50%);
+    }
+
+    .formInput input:focus {
+        border-color: var(--fg-secondary);
+        caret-color: var(--fg-secondary);
+    }
+
+    .formInput input:focus + label {
+        color: var(--fg-secondary);
+    }
+
+    button {
+        text-transform: uppercase;
+    }
+</style>
+<body>
+    <form id="signinForm">
+        <div class="formInput">
+            <i class="material-icons">lock</i>
+            <input id="password" type="password" autocomplete="off">
+            <label for="password">Password</label>
+        </div>
+        <br>
+        <div class="buttons">
+            <button id="signinButton">Unlimited Power</button>
+        </div>
+        <p>Not admin? <a href="/signin">Sign in</a> as a regular user</p>
+        <br>
+    </form>
+    <div id="toast"></div>
+</body>
+<script src="/scripts/jquery-3.5.1.min.js"></script>
+<script>
+    function showToast(message, duration = 2000) {
+        $('#toast').text(message);
+        $('#toast').slideDown(200, () => {
+            setTimeout(() => {
+                $('#toast').slideUp(200);
+            }, duration);
+        });
+    }
+</script>
+<script src="/scripts/admin.js"></script>
+</html>

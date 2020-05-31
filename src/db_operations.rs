@@ -1,4 +1,4 @@
-use super::{Context, TrackerInfo, RequestDetails, Tracker, TrackerRequest, UserDetails};
+use super::{Context, AdminDetails, TrackerInfo, RequestDetails, Tracker, TrackerRequest, UserDetails};
 use argon2::{self, Config};
 use postgres::Client;
 use chrono::NaiveDateTime;
@@ -320,10 +320,9 @@ impl Context {
                     &[email],
                 )
                 .unwrap() {
-                let created_at: NaiveDateTime = tracker_row.get(2);
                 let mut tracker = Tracker {
                     tracking_id: tracker_row.get(0),
-                    created_at: created_at.timestamp(),
+                    created_at: tracker_row.get::<_, NaiveDateTime>(2).timestamp(),
                     description: tracker_row.get(3),
                     requests: Vec::new(),
                 };
@@ -344,5 +343,40 @@ impl Context {
                 self.trackers.push(tracker);
             }
         }
+    }
+}
+
+impl AdminDetails {
+    pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        let mut photo = None;
+        if let Some(email) = cookies.get_private("email") {
+            if let Some(hash) = cookies.get_private("hash") {
+                // If the email and hash cookies are present
+                if verify_credentials(client, email.value(), hash.value()) {
+                    // If the credentials are correct
+                    photo = Some(format!(
+                        "https://www.gravatar.com/avatar/{:x}?d=retro",
+                        md5::compute(email.value().to_lowercase())
+                    ));
+                }
+            }
+        }
+        let mut admin_details = AdminDetails {
+            photo,
+            ..Default::default()
+        };
+        for user_row in client.query("SELECT user_email FROM users ORDER BY id DESC", &[]).unwrap() {
+            let mut user = (user_row.get(0), 0, 0);
+            for tracker in client.query("SELECT id, created_at FROM trackers WHERE user_email = $1", &[&user_row.get::<_, String>(0)]).unwrap() {
+                user.1 += 1;
+                admin_details.trackers.push(tracker.get::<_, NaiveDateTime>(1).timestamp());
+                for request in client.query("SELECT time FROM tracked_requests WHERE tracking_id = $1", &[&tracker.get::<_, String>(0)]).unwrap() {
+                    user.2 += 1;
+                    admin_details.requests.push(request.get::<_, NaiveDateTime>(0).timestamp());
+                }
+            }
+            admin_details.users.push(user);
+        }
+        admin_details
     }
 }
