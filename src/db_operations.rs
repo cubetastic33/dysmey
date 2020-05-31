@@ -365,7 +365,7 @@ impl AdminDetails {
             photo,
             ..Default::default()
         };
-        for user_row in client.query("SELECT user_email FROM users ORDER BY id DESC", &[]).unwrap() {
+        for user_row in client.query("SELECT email FROM users ORDER BY id DESC", &[]).unwrap() {
             let mut user = (user_row.get(0), 0, 0);
             for tracker in client.query("SELECT id, created_at FROM trackers WHERE user_email = $1", &[&user_row.get::<_, String>(0)]).unwrap() {
                 user.1 += 1;
