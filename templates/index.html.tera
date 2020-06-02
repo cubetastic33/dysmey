@@ -14,10 +14,12 @@ header {
     <div>
         <h1>Did You See My Email Yet?</h1>
         <h3>DYSMEY</h3>
+        <img src="/images/dysmey.svg"></img>
         <p>
             Keep track of whether and when your emails are being opened
         </p>
     </div>
+    <div></div>
     <div>
         <a href="#faq" class="button">FAQ</a>
         <div></div>

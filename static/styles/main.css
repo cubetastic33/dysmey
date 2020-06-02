@@ -5,8 +5,8 @@
 :root {
     --bg-primary: #212121;
     --bg-secondary: #121212;
-    --fg-primary: #b939ef;
-    --fg-secondary: #d17ff4;
+    --fg-primary: #e02847;
+    --fg-secondary: #f74260;
     --error: #EF5350;
 }
 
@@ -207,12 +207,22 @@ button:disabled, .button:disabled {
     flex-direction: column;
     font-size: 1.25rem;
     height: 100vh;
-    justify-content: space-evenly;
+    justify-content: center;
     text-align: center;
 }
 
 #slide1 h3 {
     margin-top: 0.3rem;
+}
+
+#slide1 img {
+    height: 30vh;
+    width: 30vw;
+    margin: 5vh auto;
+}
+
+#slide1 > div:nth-child(2) {
+    height: 5vh;
 }
 
 #slide1 > div:last-child {
