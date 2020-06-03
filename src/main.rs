@@ -284,7 +284,8 @@ fn rocket() -> rocket::Rocket {
         .mount("/scripts", StaticFiles::from("static/scripts"))
         .mount("/fonts", StaticFiles::from("static/fonts"))
         .mount("/images", StaticFiles::from("static/images"))
-        .mount("/", StaticFiles::from("static/icons").rank(11))
+        .mount("/videos", StaticFiles::from("static/videos"))
+        .mount("/", StaticFiles::from("static/icons").rank(20))
         .attach(Template::fairing())
 }
 
