@@ -89,6 +89,11 @@ $("#profilePicture").click(function() {
     $("#profilePictureInfo").show("slow");
 });
 
+$("#helpButton").click(function() {
+    $(".overlay").show();
+    $("#help").show("slow");
+});
+
 $("#addTrackerButton").click(function() {
     $(".overlay").show();
     $("#description").val("");

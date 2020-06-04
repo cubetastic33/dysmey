@@ -50,15 +50,36 @@ a {
     min-height: calc(100vh - 20vmin - 14.9rem);
 }
 
-#addTrackerButton {
+h2 + div {
+    display: flex;
+    justify-content: center;
+}
+
+#addTrackerButton, #helpButton {
     background-color: #282828;
     color: #FFFFFF;
     display: block;
-    margin: 1rem auto;
+    margin: 1rem;
 }
 
-#addTrackerButton:hover {
+#addTrackerButton:hover, #helpButton:hover {
     background-color: #343434;
+}
+
+#helpButton {
+    display: flex;
+}
+
+#helpButton i {
+    font-size: 1em;
+    margin-right: .5em;
+}
+
+video {
+    display: block;
+    max-width: 100%;
+    max-height: 70vh;
+    margin: auto;
 }
 
 .filter {
