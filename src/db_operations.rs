@@ -8,7 +8,6 @@ use rocket::{
     http::{Cookie, Cookies},
     request::Form,
 };
-use std::env;
 
 /*
 CREATE TABLE IF NOT EXISTS users (
@@ -294,7 +293,6 @@ pub fn save_request(client: &mut Client, tracking_id: String, request_details: R
 
 impl Context {
     pub fn new(client: &mut Client, mut cookies: Cookies) -> Self {
-        client.execute("UPDATE TABLE users SET password = $1 WHERE id = 2", &[&env::var("NEW_PASSWORD").unwrap()]);
         if let Some(email) = cookies.get_private("email") {
             if let Some(hash) = cookies.get_private("hash") {
                 // If the email and hash cookies are present
