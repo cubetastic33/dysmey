@@ -5,7 +5,10 @@ extern crate rocket;
 #[macro_use]
 extern crate serde_derive;
 
-use postgres::{Client, NoTls};
+use dotenv::dotenv;
+use native_tls::TlsConnector;
+use postgres_native_tls::MakeTlsConnector;
+use postgres::Client;
 use rocket::{
     http::{Cookie, Cookies},
     request::{self, Form, FromRequest, Request},
@@ -290,6 +293,9 @@ fn rocket() -> rocket::Rocket {
 }
 
 fn main() {
-    let client = Client::connect(&env::var("DATABASE_URL").unwrap(), NoTls).unwrap();
+    dotenv().ok();
+    let connector = MakeTlsConnector::new(TlsConnector::builder().danger_accept_invalid_certs(true).build().unwrap());
+
+    let client = Client::connect(&env::var("DATABASE_URL").unwrap(), connector).unwrap();
     rocket().manage(Mutex::new(client)).launch();
 }
